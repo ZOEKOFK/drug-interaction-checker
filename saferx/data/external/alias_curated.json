@@ -1,46 +1,2325 @@
 [
-  { "name_en": "Warfarin", "name_cn": "华法林", "pinyin": "hfl", "category": "抗凝药", "synonyms": [] },
-  { "name_en": "Acetylsalicylic acid", "name_cn": "阿司匹林", "pinyin": "aspl", "category": "抗血小板药", "synonyms": ["Aspirin", "ASA"] },
-  { "name_en": "Amiodarone", "name_cn": "胺碘酮", "pinyin": "adt", "category": "抗心律失常药", "synonyms": [] },
-  { "name_en": "Digoxin", "name_cn": "地高辛", "pinyin": "dgx", "category": "强心苷", "synonyms": [] },
-  { "name_en": "Amlodipine", "name_cn": "氨氯地平", "pinyin": "aldp", "category": "钙通道阻滞剂", "synonyms": [] },
-  { "name_en": "Hydrochlorothiazide", "name_cn": "氢氯噻嗪", "pinyin": "qlsz", "category": "利尿剂", "synonyms": ["HCTZ"] },
-  { "name_en": "Simvastatin", "name_cn": "辛伐他汀", "pinyin": "xftt", "category": "调脂药", "synonyms": [] },
-  { "name_en": "Atorvastatin", "name_cn": "阿托伐他汀", "pinyin": "atftt", "category": "调脂药", "synonyms": [] },
-  { "name_en": "Rosuvastatin", "name_cn": "瑞舒伐他汀", "pinyin": "rsftt", "category": "调脂药", "synonyms": [] },
-  { "name_en": "Clarithromycin", "name_cn": "克拉霉素", "pinyin": "klms", "category": "大环内酯类抗生素", "synonyms": [] },
-  { "name_en": "Azithromycin", "name_cn": "阿奇霉素", "pinyin": "aqms", "category": "大环内酯类抗生素", "synonyms": [] },
-  { "name_en": "Paroxetine", "name_cn": "帕罗西汀", "pinyin": "plxt", "category": "抗抑郁药", "synonyms": [] },
-  { "name_en": "Sertraline", "name_cn": "舍曲林", "pinyin": "sql", "category": "抗抑郁药", "synonyms": [] },
-  { "name_en": "Fluoxetine", "name_cn": "氟西汀", "pinyin": "fxt", "category": "抗抑郁药", "synonyms": [] },
-  { "name_en": "Tramadol", "name_cn": "曲马多", "pinyin": "qmd", "category": "镇痛药", "synonyms": [] },
-  { "name_en": "Ibuprofen", "name_cn": "布洛芬", "pinyin": "blf", "category": "解热镇痛抗炎药", "synonyms": [] },
-  { "name_en": "Metformin", "name_cn": "二甲双胍", "pinyin": "ejsg", "category": "降糖药", "synonyms": [] },
-  { "name_en": "Glimepiride", "name_cn": "格列美脲", "pinyin": "glmn", "category": "降糖药", "synonyms": [] },
-  { "name_en": "Acarbose", "name_cn": "阿卡波糖", "pinyin": "akbt", "category": "降糖药", "synonyms": [] },
-  { "name_en": "Clopidogrel", "name_cn": "氯吡格雷", "pinyin": "lbgl", "category": "抗血小板药", "synonyms": [] },
-  { "name_en": "Omeprazole", "name_cn": "奥美拉唑", "pinyin": "amlz", "category": "质子泵抑制剂", "synonyms": [] },
-  { "name_en": "Pantoprazole", "name_cn": "泮托拉唑", "pinyin": "ptlz", "category": "质子泵抑制剂", "synonyms": [] },
-  { "name_en": "Levofloxacin", "name_cn": "左氧氟沙星", "pinyin": "zyfsx", "category": "喹诺酮类抗生素", "synonyms": [] },
-  { "name_en": "Ciprofloxacin", "name_cn": "环丙沙星", "pinyin": "hpsx", "category": "喹诺酮类抗生素", "synonyms": [] },
-  { "name_en": "Amoxicillin", "name_cn": "阿莫西林", "pinyin": "amxl", "category": "青霉素类抗生素", "synonyms": [] },
-  { "name_en": "Ceftriaxone", "name_cn": "头孢曲松", "pinyin": "ttrs", "category": "头孢菌素类抗生素", "synonyms": [] },
-  { "name_en": "Lithium carbonate", "name_cn": "碳酸锂", "pinyin": "tsl", "category": "心境稳定剂", "synonyms": ["Lithium"] },
-  { "name_en": "Nifedipine", "name_cn": "硝苯地平", "pinyin": "xbp", "category": "钙通道阻滞剂", "synonyms": [] },
-  { "name_en": "Metoprolol", "name_cn": "美托洛尔", "pinyin": "mtlr", "category": "β受体阻滞剂", "synonyms": [] },
-  { "name_en": "Valsartan", "name_cn": "缬沙坦", "pinyin": "xst", "category": "降压药", "synonyms": [] },
-  { "name_en": "Losartan", "name_cn": "氯沙坦", "pinyin": "lst", "category": "降压药", "synonyms": [] },
-  { "name_en": "Spironolactone", "name_cn": "螺内酯", "pinyin": "lnz", "category": "利尿剂", "synonyms": [] },
-  { "name_en": "Furosemide", "name_cn": "呋塞米", "pinyin": "fsm", "category": "利尿剂", "synonyms": [] },
-  { "name_en": "Dexamethasone", "name_cn": "地塞米松", "pinyin": "dsms", "category": "糖皮质激素", "synonyms": [] },
-  { "name_en": "Prednisone", "name_cn": "泼尼松", "pinyin": "pns", "category": "糖皮质激素", "synonyms": [] },
-  { "name_en": "Itraconazole", "name_cn": "伊曲康唑", "pinyin": "yqkz", "category": "抗真菌药", "synonyms": [] },
-  { "name_en": "Verapamil", "name_cn": "维拉帕米", "pinyin": "wlpm", "category": "钙通道阻滞剂", "synonyms": [] },
-  { "name_en": "Phenytoin", "name_cn": "苯妥英", "pinyin": "bty", "category": "抗癫痫药", "synonyms": ["苯妥英钠"] },
-  { "name_en": "Carbamazepine", "name_cn": "卡马西平", "pinyin": "kmxp", "category": "抗癫痫药", "synonyms": [] },
-  { "name_en": "Nitroglycerin", "name_cn": "硝酸甘油", "pinyin": "xsgy", "category": "抗心绞痛药", "synonyms": [] },
-  { "name_en": "Alprazolam", "name_cn": "阿普唑仑", "pinyin": "apzl", "category": "抗焦虑药", "synonyms": [] },
-  { "name_en": "Loratadine", "name_cn": "氯雷他定", "pinyin": "ltld", "category": "抗组胺药", "synonyms": [] },
-  { "name_en": "Ondansetron", "name_cn": "昂丹司琼", "pinyin": "adsc", "category": "止吐药", "synonyms": [] },
-  { "name_en": "Glyburide", "name_cn": "格列本脲", "pinyin": "glbn", "category": "降糖药", "synonyms": ["Glibenclamide"] }
+  {
+    "name_en": "Warfarin",
+    "name_cn": "华法林",
+    "pinyin": "hfl",
+    "category": "抗凝药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Acetylsalicylic acid",
+    "name_cn": "阿司匹林",
+    "pinyin": "aspl",
+    "category": "抗血小板药",
+    "synonyms": [
+      "Aspirin",
+      "ASA"
+    ]
+  },
+  {
+    "name_en": "Amiodarone",
+    "name_cn": "胺碘酮",
+    "pinyin": "adt",
+    "category": "抗心律失常药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Digoxin",
+    "name_cn": "地高辛",
+    "pinyin": "dgx",
+    "category": "强心苷",
+    "synonyms": []
+  },
+  {
+    "name_en": "Amlodipine",
+    "name_cn": "氨氯地平",
+    "pinyin": "aldp",
+    "category": "钙通道阻滞剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Hydrochlorothiazide",
+    "name_cn": "氢氯噻嗪",
+    "pinyin": "qlsz",
+    "category": "利尿剂",
+    "synonyms": [
+      "HCTZ"
+    ]
+  },
+  {
+    "name_en": "Simvastatin",
+    "name_cn": "辛伐他汀",
+    "pinyin": "xftt",
+    "category": "调脂药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Atorvastatin",
+    "name_cn": "阿托伐他汀",
+    "pinyin": "atftt",
+    "category": "调脂药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Rosuvastatin",
+    "name_cn": "瑞舒伐他汀",
+    "pinyin": "rsftt",
+    "category": "调脂药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Clarithromycin",
+    "name_cn": "克拉霉素",
+    "pinyin": "klms",
+    "category": "大环内酯类抗生素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Azithromycin",
+    "name_cn": "阿奇霉素",
+    "pinyin": "aqms",
+    "category": "大环内酯类抗生素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Paroxetine",
+    "name_cn": "帕罗西汀",
+    "pinyin": "plxt",
+    "category": "抗抑郁药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Sertraline",
+    "name_cn": "舍曲林",
+    "pinyin": "sql",
+    "category": "抗抑郁药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Fluoxetine",
+    "name_cn": "氟西汀",
+    "pinyin": "fxt",
+    "category": "抗抑郁药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Tramadol",
+    "name_cn": "曲马多",
+    "pinyin": "qmd",
+    "category": "镇痛药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Ibuprofen",
+    "name_cn": "布洛芬",
+    "pinyin": "blf",
+    "category": "解热镇痛抗炎药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Metformin",
+    "name_cn": "二甲双胍",
+    "pinyin": "ejsg",
+    "category": "降糖药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Glimepiride",
+    "name_cn": "格列美脲",
+    "pinyin": "glmn",
+    "category": "降糖药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Acarbose",
+    "name_cn": "阿卡波糖",
+    "pinyin": "akbt",
+    "category": "降糖药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Clopidogrel",
+    "name_cn": "氯吡格雷",
+    "pinyin": "lbgl",
+    "category": "抗血小板药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Omeprazole",
+    "name_cn": "奥美拉唑",
+    "pinyin": "amlz",
+    "category": "质子泵抑制剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Pantoprazole",
+    "name_cn": "泮托拉唑",
+    "pinyin": "ptlz",
+    "category": "质子泵抑制剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Levofloxacin",
+    "name_cn": "左氧氟沙星",
+    "pinyin": "zyfsx",
+    "category": "喹诺酮类抗生素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Ciprofloxacin",
+    "name_cn": "环丙沙星",
+    "pinyin": "hpsx",
+    "category": "喹诺酮类抗生素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Amoxicillin",
+    "name_cn": "阿莫西林",
+    "pinyin": "amxl",
+    "category": "青霉素类抗生素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Ceftriaxone",
+    "name_cn": "头孢曲松",
+    "pinyin": "ttrs",
+    "category": "头孢菌素类抗生素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Lithium carbonate",
+    "name_cn": "碳酸锂",
+    "pinyin": "tsl",
+    "category": "心境稳定剂",
+    "synonyms": [
+      "Lithium"
+    ]
+  },
+  {
+    "name_en": "Nifedipine",
+    "name_cn": "硝苯地平",
+    "pinyin": "xbp",
+    "category": "钙通道阻滞剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Metoprolol",
+    "name_cn": "美托洛尔",
+    "pinyin": "mtlr",
+    "category": "β受体阻滞剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Valsartan",
+    "name_cn": "缬沙坦",
+    "pinyin": "xst",
+    "category": "降压药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Losartan",
+    "name_cn": "氯沙坦",
+    "pinyin": "lst",
+    "category": "降压药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Spironolactone",
+    "name_cn": "螺内酯",
+    "pinyin": "lnz",
+    "category": "利尿剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Furosemide",
+    "name_cn": "呋塞米",
+    "pinyin": "fsm",
+    "category": "利尿剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Dexamethasone",
+    "name_cn": "地塞米松",
+    "pinyin": "dsms",
+    "category": "糖皮质激素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Prednisone",
+    "name_cn": "泼尼松",
+    "pinyin": "pns",
+    "category": "糖皮质激素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Itraconazole",
+    "name_cn": "伊曲康唑",
+    "pinyin": "yqkz",
+    "category": "抗真菌药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Verapamil",
+    "name_cn": "维拉帕米",
+    "pinyin": "wlpm",
+    "category": "钙通道阻滞剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Phenytoin",
+    "name_cn": "苯妥英",
+    "pinyin": "bty",
+    "category": "抗癫痫药",
+    "synonyms": [
+      "苯妥英钠"
+    ]
+  },
+  {
+    "name_en": "Carbamazepine",
+    "name_cn": "卡马西平",
+    "pinyin": "kmxp",
+    "category": "抗癫痫药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Nitroglycerin",
+    "name_cn": "硝酸甘油",
+    "pinyin": "xsgy",
+    "category": "抗心绞痛药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Alprazolam",
+    "name_cn": "阿普唑仑",
+    "pinyin": "apzl",
+    "category": "抗焦虑药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Loratadine",
+    "name_cn": "氯雷他定",
+    "pinyin": "ltld",
+    "category": "抗组胺药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Ondansetron",
+    "name_cn": "昂丹司琼",
+    "pinyin": "adsc",
+    "category": "止吐药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Glyburide",
+    "name_cn": "格列本脲",
+    "pinyin": "glbn",
+    "category": "降糖药",
+    "synonyms": [
+      "Glibenclamide"
+    ]
+  },
+  {
+    "name_en": "Felodipine",
+    "name_cn": "非洛地平",
+    "category": "钙通道阻滞剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Levamlodipine",
+    "name_cn": "左旋氨氯地平",
+    "category": "钙通道阻滞剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Diltiazem",
+    "name_cn": "地尔硫卓",
+    "category": "钙通道阻滞剂",
+    "synonyms": [
+      "地尔硫䓬"
+    ]
+  },
+  {
+    "name_en": "Nicardipine",
+    "name_cn": "尼卡地平",
+    "category": "钙通道阻滞剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Isosorbide mononitrate",
+    "name_cn": "单硝酸异山梨酯",
+    "category": "抗心绞痛药",
+    "synonyms": [
+      "依姆多"
+    ]
+  },
+  {
+    "name_en": "Isosorbide dinitrate",
+    "name_cn": "硝酸异山梨酯",
+    "category": "抗心绞痛药",
+    "synonyms": [
+      "消心痛"
+    ]
+  },
+  {
+    "name_en": "Ivabradine",
+    "name_cn": "伊伐布雷定",
+    "category": "抗心绞痛药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Ranolazine",
+    "name_cn": "雷诺嗪",
+    "category": "抗心绞痛药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Benazepril",
+    "name_cn": "贝那普利",
+    "category": "ACEI 类降压药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Enalapril",
+    "name_cn": "依那普利",
+    "category": "ACEI 类降压药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Captopril",
+    "name_cn": "卡托普利",
+    "category": "ACEI 类降压药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Lisinopril",
+    "name_cn": "赖诺普利",
+    "category": "ACEI 类降压药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Perindopril",
+    "name_cn": "培哚普利",
+    "category": "ACEI 类降压药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Ramipril",
+    "name_cn": "雷米普利",
+    "category": "ACEI 类降压药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Fosinopril",
+    "name_cn": "福辛普利",
+    "category": "ACEI 类降压药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Quinapril",
+    "name_cn": "喹那普利",
+    "category": "ACEI 类降压药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Irbesartan",
+    "name_cn": "厄贝沙坦",
+    "category": "ARB 类降压药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Telmisartan",
+    "name_cn": "替米沙坦",
+    "category": "ARB 类降压药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Olmesartan",
+    "name_cn": "奥美沙坦",
+    "category": "ARB 类降压药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Eprosartan",
+    "name_cn": "依普罗沙坦",
+    "category": "ARB 类降压药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Azilsartan medoxomil",
+    "name_cn": "阿齐沙坦",
+    "category": "ARB 类降压药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Methyldopa",
+    "name_cn": "甲基多巴",
+    "category": "降压药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Hydralazine",
+    "name_cn": "肼屈嗪",
+    "category": "降压药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Minoxidil",
+    "name_cn": "米诺地尔",
+    "category": "降压药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Doxazosin",
+    "name_cn": "多沙唑嗪",
+    "category": "α受体阻滞剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Prazosin",
+    "name_cn": "哌唑嗪",
+    "category": "α受体阻滞剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Terazosin",
+    "name_cn": "特拉唑嗪",
+    "category": "α受体阻滞剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Bisoprolol",
+    "name_cn": "比索洛尔",
+    "category": "β受体阻滞剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Carvedilol",
+    "name_cn": "卡维地洛",
+    "category": "β受体阻滞剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Atenolol",
+    "name_cn": "阿替洛尔",
+    "category": "β受体阻滞剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Propranolol",
+    "name_cn": "普萘洛尔",
+    "category": "β受体阻滞剂",
+    "synonyms": [
+      "心得安"
+    ]
+  },
+  {
+    "name_en": "Nebivolol",
+    "name_cn": "奈必洛尔",
+    "category": "β受体阻滞剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Labetalol",
+    "name_cn": "拉贝洛尔",
+    "category": "β受体阻滞剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Acebutolol",
+    "name_cn": "醋丁洛尔",
+    "category": "β受体阻滞剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Betaxolol",
+    "name_cn": "倍他洛尔",
+    "category": "β受体阻滞剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Esmolol",
+    "name_cn": "艾司洛尔",
+    "category": "β受体阻滞剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Sotalol",
+    "name_cn": "索他洛尔",
+    "category": "抗心律失常药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Indapamide",
+    "name_cn": "吲达帕胺",
+    "category": "利尿剂",
+    "synonyms": [
+      "寿比山"
+    ]
+  },
+  {
+    "name_en": "Torasemide",
+    "name_cn": "托拉塞米",
+    "category": "利尿剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Amiloride",
+    "name_cn": "阿米洛利",
+    "category": "利尿剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Triamterene",
+    "name_cn": "氨苯蝶啶",
+    "category": "利尿剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Acetazolamide",
+    "name_cn": "乙酰唑胺",
+    "category": "利尿剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Bumetanide",
+    "name_cn": "布美他尼",
+    "category": "利尿剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Chlorthalidone",
+    "name_cn": "氯噻酮",
+    "category": "利尿剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Metolazone",
+    "name_cn": "美托拉宗",
+    "category": "利尿剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Dronedarone",
+    "name_cn": "决奈达隆",
+    "category": "抗心律失常药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Adenosine",
+    "name_cn": "腺苷",
+    "category": "抗心律失常药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Digitoxin",
+    "name_cn": "洋地黄毒苷",
+    "category": "强心苷",
+    "synonyms": []
+  },
+  {
+    "name_en": "Pravastatin",
+    "name_cn": "普伐他汀",
+    "category": "调脂药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Lovastatin",
+    "name_cn": "洛伐他汀",
+    "category": "调脂药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Fluvastatin",
+    "name_cn": "氟伐他汀",
+    "category": "调脂药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Pitavastatin",
+    "name_cn": "匹伐他汀",
+    "category": "调脂药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Ezetimibe",
+    "name_cn": "依折麦布",
+    "category": "调脂药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Fenofibrate",
+    "name_cn": "非诺贝特",
+    "category": "调脂药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Gemfibrozil",
+    "name_cn": "吉非贝齐",
+    "category": "调脂药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Omega-3 fatty acids",
+    "name_cn": "欧米加-3-酸乙酯",
+    "category": "调脂药",
+    "synonyms": [
+      "鱼油"
+    ]
+  },
+  {
+    "name_en": "Niacin",
+    "name_cn": "烟酸",
+    "category": "调脂药",
+    "synonyms": [
+      "维生素B3"
+    ]
+  },
+  {
+    "name_en": "Ticagrelor",
+    "name_cn": "替格瑞洛",
+    "category": "抗血小板药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Prasugrel",
+    "name_cn": "普拉格雷",
+    "category": "抗血小板药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Dipyridamole",
+    "name_cn": "双嘧达莫",
+    "category": "抗血小板药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Cilostazol",
+    "name_cn": "西洛他唑",
+    "category": "抗血小板药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Eptifibatide",
+    "name_cn": "依替巴肽",
+    "category": "抗血小板药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Tirofiban",
+    "name_cn": "替罗非班",
+    "category": "抗血小板药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Rivaroxaban",
+    "name_cn": "利伐沙班",
+    "category": "抗凝药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Apixaban",
+    "name_cn": "阿哌沙班",
+    "category": "抗凝药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Edoxaban",
+    "name_cn": "艾多沙班",
+    "category": "抗凝药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Enoxaparin",
+    "name_cn": "依诺肝素",
+    "category": "抗凝药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Heparin",
+    "name_cn": "肝素",
+    "category": "抗凝药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Fondaparinux",
+    "name_cn": "磺达肝癸钠",
+    "category": "抗凝药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Acenocoumarol",
+    "name_cn": "醋硝香豆素",
+    "category": "抗凝药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Alteplase",
+    "name_cn": "阿替普酶",
+    "category": "溶栓药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Urokinase",
+    "name_cn": "尿激酶",
+    "category": "溶栓药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Glipizide",
+    "name_cn": "格列吡嗪",
+    "category": "降糖药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Repaglinide",
+    "name_cn": "瑞格列奈",
+    "category": "降糖药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Nateglinide",
+    "name_cn": "那格列奈",
+    "category": "降糖药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Sitagliptin",
+    "name_cn": "西格列汀",
+    "category": "降糖药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Linagliptin",
+    "name_cn": "利格列汀",
+    "category": "降糖药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Saxagliptin",
+    "name_cn": "沙格列汀",
+    "category": "降糖药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Alogliptin",
+    "name_cn": "阿格列汀",
+    "category": "降糖药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Empagliflozin",
+    "name_cn": "恩格列净",
+    "category": "降糖药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Dapagliflozin",
+    "name_cn": "达格列净",
+    "category": "降糖药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Canagliflozin",
+    "name_cn": "卡格列净",
+    "category": "降糖药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Ertugliflozin",
+    "name_cn": "埃格列净",
+    "category": "降糖药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Liraglutide",
+    "name_cn": "利拉鲁肽",
+    "category": "降糖药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Semaglutide",
+    "name_cn": "司美格鲁肽",
+    "category": "降糖药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Exenatide",
+    "name_cn": "艾塞那肽",
+    "category": "降糖药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Dulaglutide",
+    "name_cn": "度拉糖肽",
+    "category": "降糖药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Lixisenatide",
+    "name_cn": "利司那肽",
+    "category": "降糖药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Insulin glargine",
+    "name_cn": "甘精胰岛素",
+    "category": "胰岛素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Insulin aspart (aspart)",
+    "name_cn": "门冬胰岛素",
+    "category": "胰岛素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Insulin lispro",
+    "name_cn": "赖脯胰岛素",
+    "category": "胰岛素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Insulin detemir",
+    "name_cn": "地特胰岛素",
+    "category": "胰岛素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Insulin human",
+    "name_cn": "人胰岛素",
+    "category": "胰岛素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Pioglitazone",
+    "name_cn": "吡格列酮",
+    "category": "降糖药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Rosiglitazone",
+    "name_cn": "罗格列酮",
+    "category": "降糖药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Tolbutamide",
+    "name_cn": "甲苯磺丁脲",
+    "category": "降糖药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Chlorpropamide",
+    "name_cn": "氯磺丙脲",
+    "category": "降糖药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Ampicillin",
+    "name_cn": "氨苄西林",
+    "category": "青霉素类抗生素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Piperacillin",
+    "name_cn": "哌拉西林",
+    "category": "青霉素类抗生素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Cefazolin",
+    "name_cn": "头孢唑林",
+    "category": "头孢菌素类抗生素",
+    "synonyms": [
+      "先锋V"
+    ]
+  },
+  {
+    "name_en": "Cefuroxime",
+    "name_cn": "头孢呋辛",
+    "category": "头孢菌素类抗生素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Cefaclor",
+    "name_cn": "头孢克洛",
+    "category": "头孢菌素类抗生素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Cefixime",
+    "name_cn": "头孢克肟",
+    "category": "头孢菌素类抗生素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Cefdinir",
+    "name_cn": "头孢地尼",
+    "category": "头孢菌素类抗生素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Cefotaxime",
+    "name_cn": "头孢噻肟",
+    "category": "头孢菌素类抗生素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Ceftazidime",
+    "name_cn": "头孢他啶",
+    "category": "头孢菌素类抗生素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Cefepime",
+    "name_cn": "头孢吡肟",
+    "category": "头孢菌素类抗生素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Cefoperazone",
+    "name_cn": "头孢哌酮",
+    "category": "头孢菌素类抗生素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Cephalexin",
+    "name_cn": "头孢氨苄",
+    "category": "头孢菌素类抗生素",
+    "synonyms": [
+      "先锋IV"
+    ]
+  },
+  {
+    "name_en": "Erythromycin",
+    "name_cn": "红霉素",
+    "category": "大环内酯类抗生素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Moxifloxacin",
+    "name_cn": "莫西沙星",
+    "category": "喹诺酮类抗生素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Ofloxacin",
+    "name_cn": "氧氟沙星",
+    "category": "喹诺酮类抗生素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Norfloxacin",
+    "name_cn": "诺氟沙星",
+    "category": "喹诺酮类抗生素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Doxycycline",
+    "name_cn": "多西环素",
+    "category": "四环素类抗生素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Minocycline",
+    "name_cn": "米诺环素",
+    "category": "四环素类抗生素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Tetracycline",
+    "name_cn": "四环素",
+    "category": "四环素类抗生素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Tigecycline",
+    "name_cn": "替加环素",
+    "category": "四环素类抗生素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Clindamycin",
+    "name_cn": "克林霉素",
+    "category": "林可酰胺类抗生素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Metronidazole",
+    "name_cn": "甲硝唑",
+    "category": "硝基咪唑类抗菌药",
+    "synonyms": [
+      "灭滴灵"
+    ]
+  },
+  {
+    "name_en": "Tinidazole",
+    "name_cn": "替硝唑",
+    "category": "硝基咪唑类抗菌药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Vancomycin",
+    "name_cn": "万古霉素",
+    "category": "糖肽类抗生素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Linezolid",
+    "name_cn": "利奈唑胺",
+    "category": "噁唑烷酮类抗菌药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Meropenem",
+    "name_cn": "美罗培南",
+    "category": "碳青霉烯类抗生素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Imipenem",
+    "name_cn": "亚胺培南",
+    "category": "碳青霉烯类抗生素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Ertapenem",
+    "name_cn": "厄他培南",
+    "category": "碳青霉烯类抗生素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Gentamicin",
+    "name_cn": "庆大霉素",
+    "category": "氨基糖苷类抗生素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Amikacin",
+    "name_cn": "阿米卡星",
+    "category": "氨基糖苷类抗生素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Tobramycin",
+    "name_cn": "妥布霉素",
+    "category": "氨基糖苷类抗生素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Nitrofurantoin",
+    "name_cn": "呋喃妥因",
+    "category": "抗菌药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Trimethoprim",
+    "name_cn": "甲氧苄啶",
+    "category": "抗菌药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Sulfamethoxazole",
+    "name_cn": "磺胺甲噁唑",
+    "category": "磺胺类抗菌药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Rifampicin",
+    "name_cn": "利福平",
+    "category": "抗结核药",
+    "synonyms": [
+      "Rifampicin"
+    ]
+  },
+  {
+    "name_en": "Isoniazid",
+    "name_cn": "异烟肼",
+    "category": "抗结核药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Ethambutol",
+    "name_cn": "乙胺丁醇",
+    "category": "抗结核药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Pyrazinamide",
+    "name_cn": "吡嗪酰胺",
+    "category": "抗结核药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Fluconazole",
+    "name_cn": "氟康唑",
+    "category": "抗真菌药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Voriconazole",
+    "name_cn": "伏立康唑",
+    "category": "抗真菌药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Posaconazole",
+    "name_cn": "泊沙康唑",
+    "category": "抗真菌药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Amphotericin B",
+    "name_cn": "两性霉素B",
+    "category": "抗真菌药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Caspofungin",
+    "name_cn": "卡泊芬净",
+    "category": "抗真菌药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Micafungin",
+    "name_cn": "米卡芬净",
+    "category": "抗真菌药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Terbinafine",
+    "name_cn": "特比萘芬",
+    "category": "抗真菌药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Acyclovir",
+    "name_cn": "阿昔洛韦",
+    "category": "抗病毒药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Valaciclovir",
+    "name_cn": "伐昔洛韦",
+    "category": "抗病毒药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Ganciclovir",
+    "name_cn": "更昔洛韦",
+    "category": "抗病毒药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Oseltamivir",
+    "name_cn": "奥司他韦",
+    "category": "抗病毒药",
+    "synonyms": [
+      "达菲"
+    ]
+  },
+  {
+    "name_en": "Ribavirin",
+    "name_cn": "利巴韦林",
+    "category": "抗病毒药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Entecavir",
+    "name_cn": "恩替卡韦",
+    "category": "抗病毒药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Lamivudine",
+    "name_cn": "拉米夫定",
+    "category": "抗病毒药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Efavirenz",
+    "name_cn": "依非韦伦",
+    "category": "抗病毒药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Nevirapine",
+    "name_cn": "奈韦拉平",
+    "category": "抗病毒药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Lopinavir",
+    "name_cn": "洛匹那韦",
+    "category": "抗病毒药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Ritonavir",
+    "name_cn": "利托那韦",
+    "category": "抗病毒药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Dolutegravir",
+    "name_cn": "多替拉韦",
+    "category": "抗病毒药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Chloroquine",
+    "name_cn": "氯喹",
+    "category": "抗疟药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Hydroxychloroquine",
+    "name_cn": "羟氯喹",
+    "category": "抗风湿药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Albendazole",
+    "name_cn": "阿苯达唑",
+    "category": "抗寄生虫药",
+    "synonyms": [
+      "肠虫清"
+    ]
+  },
+  {
+    "name_en": "Mebendazole",
+    "name_cn": "甲苯达唑",
+    "category": "抗寄生虫药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Salbutamol",
+    "name_cn": "沙丁胺醇",
+    "category": "支气管扩张剂",
+    "synonyms": [
+      "Salbutamol",
+      "万托林"
+    ]
+  },
+  {
+    "name_en": "Formoterol",
+    "name_cn": "福莫特罗",
+    "category": "支气管扩张剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Salmeterol",
+    "name_cn": "沙美特罗",
+    "category": "支气管扩张剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Tiotropium",
+    "name_cn": "噻托溴铵",
+    "category": "支气管扩张剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Ipratropium",
+    "name_cn": "异丙托溴铵",
+    "category": "支气管扩张剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Theophylline",
+    "name_cn": "茶碱",
+    "category": "平喘药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Aminophylline",
+    "name_cn": "氨茶碱",
+    "category": "平喘药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Montelukast",
+    "name_cn": "孟鲁司特",
+    "category": "平喘药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Budesonide",
+    "name_cn": "布地奈德",
+    "category": "吸入性糖皮质激素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Beclomethasone dipropionate",
+    "name_cn": "倍氯米松",
+    "category": "吸入性糖皮质激素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Fluticasone",
+    "name_cn": "氟替卡松",
+    "category": "吸入性糖皮质激素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Ciclesonide",
+    "name_cn": "环索奈德",
+    "category": "吸入性糖皮质激素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Prednisolone",
+    "name_cn": "泼尼松龙",
+    "category": "糖皮质激素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Methylprednisolone",
+    "name_cn": "甲泼尼龙",
+    "category": "糖皮质激素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Hydrocortisone",
+    "name_cn": "氢化可的松",
+    "category": "糖皮质激素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Acetylcysteine",
+    "name_cn": "乙酰半胱氨酸",
+    "category": "祛痰药",
+    "synonyms": [
+      "富露施"
+    ]
+  },
+  {
+    "name_en": "Dextromethorphan",
+    "name_cn": "右美沙芬",
+    "category": "镇咳药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Codeine",
+    "name_cn": "可待因",
+    "category": "镇咳镇痛药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Cetirizine",
+    "name_cn": "西替利嗪",
+    "category": "抗组胺药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Fexofenadine",
+    "name_cn": "非索非那定",
+    "category": "抗组胺药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Desloratadine",
+    "name_cn": "地氯雷他定",
+    "category": "抗组胺药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Chlorpheniramine",
+    "name_cn": "氯苯那敏",
+    "category": "抗组胺药",
+    "synonyms": [
+      "扑尔敏"
+    ]
+  },
+  {
+    "name_en": "Diphenhydramine",
+    "name_cn": "苯海拉明",
+    "category": "抗组胺药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Promethazine",
+    "name_cn": "异丙嗪",
+    "category": "抗组胺药",
+    "synonyms": [
+      "非那根"
+    ]
+  },
+  {
+    "name_en": "Esomeprazole",
+    "name_cn": "埃索美拉唑",
+    "category": "质子泵抑制剂",
+    "synonyms": [
+      "耐信"
+    ]
+  },
+  {
+    "name_en": "Lansoprazole",
+    "name_cn": "兰索拉唑",
+    "category": "质子泵抑制剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Rabeprazole",
+    "name_cn": "雷贝拉唑",
+    "category": "质子泵抑制剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Ranitidine",
+    "name_cn": "雷尼替丁",
+    "category": "H2 受体拮抗剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Famotidine",
+    "name_cn": "法莫替丁",
+    "category": "H2 受体拮抗剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Cimetidine",
+    "name_cn": "西咪替丁",
+    "category": "H2 受体拮抗剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Granisetron",
+    "name_cn": "格拉司琼",
+    "category": "止吐药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Metoclopramide",
+    "name_cn": "甲氧氯普胺",
+    "category": "止吐促动力药",
+    "synonyms": [
+      "胃复安"
+    ]
+  },
+  {
+    "name_en": "Loperamide",
+    "name_cn": "洛哌丁胺",
+    "category": "止泻药",
+    "synonyms": [
+      "易蒙停"
+    ]
+  },
+  {
+    "name_en": "Lactulose",
+    "name_cn": "乳果糖",
+    "category": "缓泻药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Bisacodyl",
+    "name_cn": "比沙可啶",
+    "category": "缓泻药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Ursodeoxycholic acid",
+    "name_cn": "熊去氧胆酸",
+    "category": "利胆药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Mesalazine",
+    "name_cn": "美沙拉秦",
+    "category": "肠道抗炎药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Sulfasalazine",
+    "name_cn": "柳氮磺吡啶",
+    "category": "肠道抗炎药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Simethicone",
+    "name_cn": "二甲硅油",
+    "category": "消胀药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Fluvoxamine",
+    "name_cn": "氟伏沙明",
+    "category": "抗抑郁药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Citalopram",
+    "name_cn": "西酞普兰",
+    "category": "抗抑郁药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Escitalopram",
+    "name_cn": "艾司西酞普兰",
+    "category": "抗抑郁药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Venlafaxine",
+    "name_cn": "文拉法辛",
+    "category": "抗抑郁药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Duloxetine",
+    "name_cn": "度洛西汀",
+    "category": "抗抑郁药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Mirtazapine",
+    "name_cn": "米氮平",
+    "category": "抗抑郁药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Amitriptyline",
+    "name_cn": "阿米替林",
+    "category": "抗抑郁药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Clomipramine",
+    "name_cn": "氯米帕明",
+    "category": "抗抑郁药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Imipramine",
+    "name_cn": "丙米嗪",
+    "category": "抗抑郁药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Trazodone",
+    "name_cn": "曲唑酮",
+    "category": "抗抑郁药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Bupropion",
+    "name_cn": "安非他酮",
+    "category": "抗抑郁药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Olanzapine",
+    "name_cn": "奥氮平",
+    "category": "抗精神病药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Quetiapine",
+    "name_cn": "喹硫平",
+    "category": "抗精神病药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Risperidone",
+    "name_cn": "利培酮",
+    "category": "抗精神病药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Aripiprazole",
+    "name_cn": "阿立哌唑",
+    "category": "抗精神病药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Clozapine",
+    "name_cn": "氯氮平",
+    "category": "抗精神病药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Ziprasidone",
+    "name_cn": "齐拉西酮",
+    "category": "抗精神病药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Haloperidol",
+    "name_cn": "氟哌啶醇",
+    "category": "抗精神病药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Paliperidone",
+    "name_cn": "帕利哌酮",
+    "category": "抗精神病药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Amisulpride",
+    "name_cn": "氨磺必利",
+    "category": "抗精神病药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Valproic acid",
+    "name_cn": "丙戊酸",
+    "category": "抗癫痫药",
+    "synonyms": [
+      "丙戊酸钠"
+    ]
+  },
+  {
+    "name_en": "Oxcarbazepine",
+    "name_cn": "奥卡西平",
+    "category": "抗癫痫药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Lamotrigine",
+    "name_cn": "拉莫三嗪",
+    "category": "抗癫痫药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Levetiracetam",
+    "name_cn": "左乙拉西坦",
+    "category": "抗癫痫药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Topiramate",
+    "name_cn": "托吡酯",
+    "category": "抗癫痫药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Gabapentin",
+    "name_cn": "加巴喷丁",
+    "category": "抗癫痫药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Pregabalin",
+    "name_cn": "普瑞巴林",
+    "category": "抗癫痫药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Phenobarbital",
+    "name_cn": "苯巴比妥",
+    "category": "抗癫痫药",
+    "synonyms": [
+      "鲁米那"
+    ]
+  },
+  {
+    "name_en": "Zolpidem",
+    "name_cn": "唑吡坦",
+    "category": "镇静催眠药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Lorazepam",
+    "name_cn": "劳拉西泮",
+    "category": "抗焦虑药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Diazepam",
+    "name_cn": "地西泮",
+    "category": "抗焦虑药",
+    "synonyms": [
+      "安定"
+    ]
+  },
+  {
+    "name_en": "Clonazepam",
+    "name_cn": "氯硝西泮",
+    "category": "抗焦虑药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Midazolam",
+    "name_cn": "咪达唑仑",
+    "category": "镇静药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Melatonin",
+    "name_cn": "褪黑素",
+    "category": "助眠药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Donepezil",
+    "name_cn": "多奈哌齐",
+    "category": "抗痴呆药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Memantine",
+    "name_cn": "美金刚",
+    "category": "抗痴呆药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Rivastigmine",
+    "name_cn": "利斯的明",
+    "category": "抗痴呆药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Galantamine",
+    "name_cn": "加兰他敏",
+    "category": "抗痴呆药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Levodopa",
+    "name_cn": "左旋多巴",
+    "category": "抗帕金森药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Pramipexole",
+    "name_cn": "普拉克索",
+    "category": "抗帕金森药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Ropinirole",
+    "name_cn": "罗匹尼罗",
+    "category": "抗帕金森药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Selegiline",
+    "name_cn": "司来吉兰",
+    "category": "抗帕金森药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Entacapone",
+    "name_cn": "恩他卡朋",
+    "category": "抗帕金森药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Sumatriptan",
+    "name_cn": "舒马曲普坦",
+    "category": "抗偏头痛药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Rizatriptan",
+    "name_cn": "利扎曲普坦",
+    "category": "抗偏头痛药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Diclofenac",
+    "name_cn": "双氯芬酸",
+    "category": "解热镇痛抗炎药",
+    "synonyms": [
+      "扶他林"
+    ]
+  },
+  {
+    "name_en": "Naproxen",
+    "name_cn": "萘普生",
+    "category": "解热镇痛抗炎药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Indomethacin",
+    "name_cn": "吲哚美辛",
+    "category": "解热镇痛抗炎药",
+    "synonyms": [
+      "消炎痛"
+    ]
+  },
+  {
+    "name_en": "Celecoxib",
+    "name_cn": "塞来昔布",
+    "category": "解热镇痛抗炎药",
+    "synonyms": [
+      "西乐葆"
+    ]
+  },
+  {
+    "name_en": "Meloxicam",
+    "name_cn": "美洛昔康",
+    "category": "解热镇痛抗炎药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Piroxicam",
+    "name_cn": "吡罗昔康",
+    "category": "解热镇痛抗炎药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Acetaminophen",
+    "name_cn": "对乙酰氨基酚",
+    "category": "解热镇痛药",
+    "synonyms": [
+      "Paracetamol",
+      "扑热息痛"
+    ]
+  },
+  {
+    "name_en": "Morphine",
+    "name_cn": "吗啡",
+    "category": "阿片类镇痛药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Oxycodone",
+    "name_cn": "羟考酮",
+    "category": "阿片类镇痛药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Fentanyl",
+    "name_cn": "芬太尼",
+    "category": "阿片类镇痛药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Methadone",
+    "name_cn": "美沙酮",
+    "category": "阿片类镇痛药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Buprenorphine",
+    "name_cn": "丁丙诺啡",
+    "category": "阿片类镇痛药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Naloxone",
+    "name_cn": "纳洛酮",
+    "category": "阿片受体拮抗剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Lidocaine",
+    "name_cn": "利多卡因",
+    "category": "局部麻醉药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Ropivacaine",
+    "name_cn": "罗哌卡因",
+    "category": "局部麻醉药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Bupivacaine",
+    "name_cn": "布比卡因",
+    "category": "局部麻醉药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Colchicine",
+    "name_cn": "秋水仙碱",
+    "category": "抗痛风药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Allopurinol",
+    "name_cn": "别嘌醇",
+    "category": "抗痛风药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Febuxostat",
+    "name_cn": "非布司他",
+    "category": "抗痛风药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Leflunomide",
+    "name_cn": "来氟米特",
+    "category": "抗风湿药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Methotrexate",
+    "name_cn": "甲氨蝶呤",
+    "category": "抗风湿药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Azathioprine",
+    "name_cn": "硫唑嘌呤",
+    "category": "免疫抑制剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Cyclosporine",
+    "name_cn": "环孢素",
+    "category": "免疫抑制剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Tacrolimus",
+    "name_cn": "他克莫司",
+    "category": "免疫抑制剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Mycophenolate mofetil",
+    "name_cn": "吗替麦考酚酯",
+    "category": "免疫抑制剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Sirolimus",
+    "name_cn": "西罗莫司",
+    "category": "免疫抑制剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Cyclophosphamide",
+    "name_cn": "环磷酰胺",
+    "category": "免疫抑制剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Levothyroxine",
+    "name_cn": "左甲状腺素",
+    "category": "甲状腺激素",
+    "synonyms": [
+      "优甲乐"
+    ]
+  },
+  {
+    "name_en": "Methimazole",
+    "name_cn": "甲巯咪唑",
+    "category": "抗甲状腺药",
+    "synonyms": [
+      "赛治"
+    ]
+  },
+  {
+    "name_en": "Propylthiouracil",
+    "name_cn": "丙硫氧嘧啶",
+    "category": "抗甲状腺药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Calcitriol",
+    "name_cn": "骨化三醇",
+    "category": "维生素D 衍生物",
+    "synonyms": []
+  },
+  {
+    "name_en": "Alendronic acid",
+    "name_cn": "阿仑膦酸",
+    "category": "抗骨质疏松药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Risedronic acid",
+    "name_cn": "利塞膦酸",
+    "category": "抗骨质疏松药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Zoledronic acid",
+    "name_cn": "唑来膦酸",
+    "category": "抗骨质疏松药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Teriparatide",
+    "name_cn": "特立帕肽",
+    "category": "抗骨质疏松药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Tamsulosin",
+    "name_cn": "坦索罗辛",
+    "category": "前列腺用药",
+    "synonyms": [
+      "哈乐"
+    ]
+  },
+  {
+    "name_en": "Finasteride",
+    "name_cn": "非那雄胺",
+    "category": "前列腺用药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Dutasteride",
+    "name_cn": "度他雄胺",
+    "category": "前列腺用药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Sildenafil",
+    "name_cn": "西地那非",
+    "category": "PDE5 抑制剂",
+    "synonyms": [
+      "万艾可"
+    ]
+  },
+  {
+    "name_en": "Tadalafil",
+    "name_cn": "他达拉非",
+    "category": "PDE5 抑制剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Vardenafil",
+    "name_cn": "伐地那非",
+    "category": "PDE5 抑制剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Oxybutynin",
+    "name_cn": "奥昔布宁",
+    "category": "膀胱过度活动症用药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Solifenacin",
+    "name_cn": "索利那新",
+    "category": "膀胱过度活动症用药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Tolterodine",
+    "name_cn": "托特罗定",
+    "category": "膀胱过度活动症用药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Tamoxifen",
+    "name_cn": "他莫昔芬",
+    "category": "抗肿瘤药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Anastrozole",
+    "name_cn": "阿那曲唑",
+    "category": "抗肿瘤药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Letrozole",
+    "name_cn": "来曲唑",
+    "category": "抗肿瘤药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Imatinib",
+    "name_cn": "伊马替尼",
+    "category": "抗肿瘤药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Capecitabine",
+    "name_cn": "卡培他滨",
+    "category": "抗肿瘤药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Fluorouracil",
+    "name_cn": "氟尿嘧啶",
+    "category": "抗肿瘤药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Cisplatin",
+    "name_cn": "顺铂",
+    "category": "抗肿瘤药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Carboplatin",
+    "name_cn": "卡铂",
+    "category": "抗肿瘤药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Paclitaxel",
+    "name_cn": "紫杉醇",
+    "category": "抗肿瘤药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Docetaxel",
+    "name_cn": "多西他赛",
+    "category": "抗肿瘤药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Doxorubicin",
+    "name_cn": "多柔比星",
+    "category": "抗肿瘤药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Vincristine",
+    "name_cn": "长春新碱",
+    "category": "抗肿瘤药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Gemcitabine",
+    "name_cn": "吉西他滨",
+    "category": "抗肿瘤药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Irinotecan",
+    "name_cn": "伊立替康",
+    "category": "抗肿瘤药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Etoposide",
+    "name_cn": "依托泊苷",
+    "category": "抗肿瘤药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Rituximab",
+    "name_cn": "利妥昔单抗",
+    "category": "抗肿瘤药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Trastuzumab",
+    "name_cn": "曲妥珠单抗",
+    "category": "抗肿瘤药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Timolol",
+    "name_cn": "噻吗洛尔",
+    "category": "降眼压药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Latanoprost",
+    "name_cn": "拉坦前列素",
+    "category": "降眼压药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Bimatoprost",
+    "name_cn": "贝美前列素",
+    "category": "降眼压药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Dorzolamide (ophthalmic)",
+    "name_cn": "多佐胺",
+    "category": "降眼压药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Brinzolamide",
+    "name_cn": "布林佐胺",
+    "category": "降眼压药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Pilocarpine",
+    "name_cn": "毛果芸香碱",
+    "category": "降眼压药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Atropine",
+    "name_cn": "阿托品",
+    "category": "抗胆碱药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Tropicamide",
+    "name_cn": "托吡卡胺",
+    "category": "散瞳药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Folic acid",
+    "name_cn": "叶酸",
+    "category": "维生素",
+    "synonyms": []
+  },
+  {
+    "name_en": "Cyanocobalamin",
+    "name_cn": "氰钴胺",
+    "category": "维生素",
+    "synonyms": [
+      "维生素B12"
+    ]
+  },
+  {
+    "name_en": "Cholecalciferol",
+    "name_cn": "胆钙化醇",
+    "category": "维生素",
+    "synonyms": [
+      "维生素D3"
+    ]
+  },
+  {
+    "name_en": "Pyridoxine",
+    "name_cn": "吡哆醇",
+    "category": "维生素",
+    "synonyms": [
+      "维生素B6"
+    ]
+  },
+  {
+    "name_en": "Ascorbic acid",
+    "name_cn": "抗坏血酸",
+    "category": "维生素",
+    "synonyms": [
+      "维生素C"
+    ]
+  },
+  {
+    "name_en": "Calcium carbonate",
+    "name_cn": "碳酸钙",
+    "category": "矿物质补充剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Potassium chloride",
+    "name_cn": "氯化钾",
+    "category": "电解质补充剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Sodium bicarbonate",
+    "name_cn": "碳酸氢钠",
+    "category": "抗酸药",
+    "synonyms": []
+  },
+  {
+    "name_en": "Magnesium sulfate",
+    "name_cn": "硫酸镁",
+    "category": "电解质补充剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Ferrous sulfate anhydrous",
+    "name_cn": "硫酸亚铁",
+    "category": "补铁剂",
+    "synonyms": []
+  },
+  {
+    "name_en": "Zinc sulfate",
+    "name_cn": "硫酸锌",
+    "category": "矿物质补充剂",
+    "synonyms": []
+  }
 ]

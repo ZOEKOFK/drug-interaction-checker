@@ -21,9 +21,9 @@ function capColor(category) {
 
 <template>
   <span class="pill" :class="compact ? 'text-xs' : 'text-sm'" :style="{ '--pill-cap': capColor(drug.category) }">
-    <span class="relative z-10 flex items-center" :class="compact ? 'pl-3 pr-2 py-1' : 'pl-6 pr-2.5 py-1.5'">
+    <span class="relative z-10 flex items-center min-w-0" :class="compact ? 'pl-3 pr-2 py-1' : 'pl-6 pr-2.5 py-1.5'">
       <span class="font-semibold whitespace-nowrap">{{ drug.name_cn }}</span>
-      <span v-if="drug.name_en !== drug.name_cn" class="ml-1.5 text-ink-faint hidden sm:inline whitespace-nowrap">{{ drug.name_en }}</span>
+      <span v-if="!compact && drug.name_en !== drug.name_cn" class="ml-1.5 text-ink-faint hidden sm:inline whitespace-nowrap">{{ drug.name_en }}</span>
     </span>
     <button
       v-if="removable"

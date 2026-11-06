@@ -10,7 +10,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from .api.routes import check, drugs, graph, lab, report
-from .config import DB_PATH, FRONTEND_DIST, get_data_version
+from .config import DB_PATH, FRONTEND_DIST, get_data_version, get_stats
 from .core.db import open_conn
 
 app = FastAPI(
@@ -43,6 +43,7 @@ def health():
             "status": "ok",
             "db_path": str(DB_PATH),
             "data_version": get_data_version(conn),
+            "stats": get_stats(conn),
         }
     finally:
         conn.close()

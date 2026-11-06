@@ -17,9 +17,25 @@ ROOT = Path(__file__).resolve().parents[1]
 PROC_DIR = ROOT / "data" / "processed"
 CURATED = ROOT / "data" / "external" / "alias_curated.json"
 
+try:  # 拼音首字母自动生成（仅构建期依赖，运行期无）
+    from pypinyin import Style, lazy_pinyin
+except ImportError:  # pragma: no cover - 缺依赖时退化为手工 pinyin 字段
+    lazy_pinyin = None
+    Style = None
+
 
 def norm(s: str) -> str:
     return s.strip().lower()
+
+
+def pinyin_initials(text: str) -> str:
+    """中文名 -> 拼音首字母（如 华法林 -> hfl）。"""
+    if not text or lazy_pinyin is None:
+        return ""
+    try:
+        return "".join(p[0] for p in lazy_pinyin(text, style=Style.FIRST_LETTER, errors="ignore") if p)
+    except Exception:  # noqa: BLE001 - 个别生僻字失败不影响主流程
+        return ""
 
 
 def main() -> int:
@@ -58,8 +74,10 @@ def main() -> int:
         matched += 1
         add(item["name_cn"], "cn", did)
         add(norm(item["name_cn"]), "cn", did)
-        if item.get("pinyin"):
-            add(item["pinyin"], "pinyin", did)
+        # 拼音优先取人工审编值，缺失时由 pypinyin 自动生成首字母
+        py = item.get("pinyin") or pinyin_initials(item["name_cn"])
+        if py:
+            add(py, "pinyin", did)
         for syn in item.get("synonyms", []):
             add(syn, "synonym", did)
             add(norm(syn), "synonym", did)

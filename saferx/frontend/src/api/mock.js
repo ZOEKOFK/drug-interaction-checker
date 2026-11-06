@@ -226,3 +226,23 @@ export function extractTriples(text) {
   }
   return { entities, triples }
 }
+
+/** 离线演示子集的规模信息（与 /api/health 的 stats 结构保持一致） */
+export function getStats() {
+  const levels = { Major: 0, Moderate: 0, Minor: 0, Unknown: 0 }
+  for (const r of ddiList) levels[r.level] = (levels[r.level] || 0) + 1
+  return {
+    offline: true,
+    drugs: drugs.length,
+    drugs_with_cn: drugs.filter((d) => d.name_cn && d.name_cn !== d.name_en).length,
+    ddi_pairs: ddiList.length,
+    mechanisms: ddiList.filter((r) => r.mechanism_cn).length,
+    mechanisms_covered_pairs: ddiList.filter((r) => r.mechanism_cn).length,
+    aliases: 0,
+    aliases_cn: 0,
+    templates: templates.length,
+    levels,
+    built_at: '',
+    source: 'DDInter 2.0（离线演示子集）'
+  }
+}

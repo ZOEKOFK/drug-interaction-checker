@@ -1,9 +1,9 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useMedStore } from '../stores/medications.js'
 import { useResultStore } from '../stores/results.js'
-import { check as apiCheck, getTemplates } from '../api/client.js'
+import { check as apiCheck, getStats, getTemplates } from '../api/client.js'
 import DrugSearchBox from '../components/DrugSearchBox.vue'
 import PillChip from '../components/PillChip.vue'
 import { useCountUp } from '../composables/useCountUp.js'
@@ -12,14 +12,19 @@ const router = useRouter()
 const medStore = useMedStore()
 const resultStore = useResultStore()
 
-const statDrugs = useCountUp(2310)
-const statDdi = useCountUp(302516)
-const statMech = useCountUp(8598)
+/* 规模数字来自后端 meta（离线时降级为演示子集），不再硬编码官方口径 */
+const stats = ref(null)
+const statDrugs = useCountUp(() => stats.value?.drugs ?? 0)
+const statDdi = useCountUp(() => stats.value?.ddi_pairs ?? 0)
+const statCn = useCountUp(() => stats.value?.drugs_with_cn ?? 0)
 
 const templates = ref([])
 onMounted(async () => {
+  getStats().then((s) => (stats.value = s))
   templates.value = await getTemplates()
 })
+
+const fmt = (n) => (n ?? 0).toLocaleString()
 
 function onSelect(drug) {
   medStore.add(drug)
@@ -33,23 +38,23 @@ async function loadTemplate(tpl) {
   router.push('/medications')
 }
 
-const steps = [
+const steps = computed(() => [
   {
     icon: 'M11 5a4 4 0 0 0-4 4c0 .5.1 1 .3 1.4-1.2.6-2 1.8-2 3.2a3.5 3.5 0 0 0 3.5 3.5h7a3.5 3.5 0 0 0 3.5-3.5c0-1.4-.8-2.6-2-3.2.2-.4.3-.9.3-1.4a4 4 0 0 0-4-4h-2z',
     title: '建立药单',
-    desc: '输入药名或一键载入慢病模板，把你正在吃的药加进「药盒」。'
+    desc: '输入中文药名、英文名或拼音首字母，或一键载入慢病模板，把你在吃的药加进「药盒」。'
   },
   {
     icon: 'm21 21-4.3-4.3M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z',
     title: '两两智能检查',
-    desc: '系统对药单内所有 C(n,2) 组合逐一比对 30 万条审编 DDI 记录。'
+    desc: `系统对药单内所有 C(n,2) 组合逐一比对 ${fmt(stats.value?.ddi_pairs)} 条审编 DDI 记录。`
   },
   {
     icon: 'M3 3v18h18M7 15l4-6 3 4 5-8',
     title: '读懂风险图谱',
     desc: '三级风险卡片 + 作用机制 + 处置建议 + 可交互知识图谱。'
   }
-]
+])
 </script>
 
 <template>
@@ -57,7 +62,9 @@ const steps = [
     <!-- ============ Hero ============ -->
     <section class="dot-grid border-b border-line">
       <div class="max-w-6xl mx-auto px-4 pt-16 pb-12 text-center">
-        <span class="badge badge-clear badge-dot mb-5 inline-flex">基于 DDInter 2.0 审编数据库 · 2310 种已批准药物</span>
+        <span class="badge badge-clear badge-dot mb-5 inline-flex">
+          基于 DDInter 2.0 审编数据库 · 已入库 {{ fmt(stats?.drugs) }} 种药物
+        </span>
         <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-ink leading-tight">
           一张药单，
           <span class="text-primary">看清所有</span>药物相互作用
@@ -95,12 +102,12 @@ const steps = [
             <p class="text-xs text-ink-faint mt-1">DDI 记录</p>
           </div>
           <div class="py-2 sm:border-t-0 border-t border-line">
-            <p class="text-3xl font-extrabold text-primary tabular-nums">{{ statMech.toLocaleString() }}</p>
-            <p class="text-xs text-ink-faint mt-1">机制描述</p>
+            <p class="text-3xl font-extrabold text-primary tabular-nums">{{ statCn.toLocaleString() }}</p>
+            <p class="text-xs text-ink-faint mt-1">中文名覆盖</p>
           </div>
           <div class="py-2 sm:border-t-0 border-t border-line">
             <p class="text-3xl font-extrabold text-primary">&lt;5<span class="text-base font-bold">ms</span></p>
-            <p class="text-xs text-ink-faint mt-1">10 种药全组合检查</p>
+            <p class="text-xs text-ink-faint mt-1">10 种药 45 组合检查</p>
           </div>
         </div>
       </div>
@@ -163,7 +170,7 @@ const steps = [
 
     <!-- ============ 底部引导 ============ -->
     <section class="max-w-6xl mx-auto px-4 py-12">
-      <div class="card p-8 bg-primary text-white relative overflow-hidden">
+      <div class="card card-invert p-8 relative overflow-hidden">
         <div class="absolute -right-10 -top-10 w-48 h-48 rounded-full bg-white/10 float-soft" aria-hidden="true" />
         <div class="absolute -right-24 top-16 w-64 h-64 rounded-full bg-white/5" aria-hidden="true" />
         <div class="relative flex flex-wrap items-center justify-between gap-5">

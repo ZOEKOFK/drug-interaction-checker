@@ -1,10 +1,21 @@
 <script setup>
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useMedStore } from './stores/medications.js'
+import { getStats } from './api/client.js'
 import DisclaimerBar from './components/DisclaimerBar.vue'
 
 const router = useRouter()
 const medStore = useMedStore()
+
+/* 后端离线时（断网答辩场景）给出明确标识，避免把演示子集误当全量数据 */
+const offline = ref(false)
+const offlineStats = ref(null)
+onMounted(async () => {
+  const s = await getStats()
+  offline.value = !!s.offline
+  offlineStats.value = s
+})
 
 const navItems = [
   { path: '/', label: '首页' },
@@ -49,6 +60,14 @@ function goMedications() {
         </nav>
 
         <!-- 药单入口徽标 -->
+        <span
+          v-if="offline"
+          class="shrink-0 hidden sm:inline-flex items-center gap-1.5 rounded-full bg-risk-moderate-bg text-risk-moderate px-3 py-1.5 text-xs font-bold"
+          :title="`后端未连接，已降级为离线演示数据（${offlineStats?.drugs ?? 0} 种药 / ${offlineStats?.ddi_pairs ?? 0} 条关系）`"
+        >
+          <i class="w-1.5 h-1.5 rounded-full bg-risk-moderate inline-block" />
+          离线演示数据
+        </span>
         <button
           class="shrink-0 flex items-center gap-2 border border-primary-soft rounded-full pl-3 pr-4 py-1.5 text-sm font-semibold text-primary hover:bg-primary-50 transition-colors"
           title="查看我的药单"

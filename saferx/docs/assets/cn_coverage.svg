@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="220" viewBox="0 0 680 220" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif">
+<rect width="680" height="220" fill="#FFFFFF"/>
+<circle cx="108" cy="110.0" r="62" fill="none" stroke="#E7F1ED" stroke-width="20"/>
+<circle cx="108" cy="110.0" r="62" fill="none" stroke="#0F6E56" stroke-width="20"
+        stroke-linecap="round" stroke-dasharray="72.3 389.6"
+        transform="rotate(-90 108 110.0)"/>
+<text x="108" y="116.0" text-anchor="middle" font-size="22" font-weight="700" fill="#0F6E56">18.6%</text>
+<text x="200" y="98.0" font-size="14" fill="#1F2A26">中文通用名覆盖（drug.name_cn 非空）</text>
+<text x="200" y="122.0" font-size="13" fill="#55655E">366 / 1,971</text>
+<text x="200" y="144.0" font-size="12" fill="#8CA096">未覆盖部分需使用英文名检索</text>
+</svg>

@@ -103,4 +103,18 @@ export function isBackendOnline() {
   return backendOnline === true
 }
 
+/** 库内真实规模（首页/关于页展示，避免硬编码官方口径） */
+export async function getStats() {
+  if (backendOnline !== false) {
+    try {
+      const data = await jfetch('/api/health', {}, 3000)
+      backendOnline = true
+      return { ...data.stats, offline: false, data_version: data.data_version }
+    } catch {
+      backendOnline = false
+    }
+  }
+  return mock.getStats()
+}
+
 export { mock }

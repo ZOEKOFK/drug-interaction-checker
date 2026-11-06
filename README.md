@@ -144,6 +144,8 @@ docker compose -f deploy/docker-compose.yml up --build
 | `make start` | 一键启动（initdb → uvicorn + vite dev） |
 | `make prod` | 生产模式单服务（构建前端 + 0.0.0.0:8000） |
 | `make clean` | 数据清洗重跑（配合 initdb 重建） |
+| `make profile` | 重新生成数据画像图表与 `docs/data_profile.md` |
+| `make shots` | 重新生成 `deploy/screenshots/` 演示兜底截图（需服务已启动） |
 
 > **数据不进仓库**：`data/raw`、`data/processed`、`*.sqlite`、`ml/artifacts` 均已加入 `.gitignore`，克隆后执行 `make data && make initdb` 即可从零重建。`data/external/`（人工审编的别名表 / 机制文本 / 模板）随仓库版本化。
 
@@ -367,7 +369,7 @@ CREATE TABLE alias (
 
 | 数据集 | 规模 | 许可 | 用途 |
 |---|---|---|---|
-| **DDInter 2.0**（[ddinter2.scbdd.com](https://ddinter2.scbdd.com)，Nucleic Acids Res 2025） | 2,310 药、302,516 条 DDI、8,598 条机制描述；另含 857 DFI、8,359 DDSI、6,033 重复用药记录 | **CC BY-NC-SA 4.0** | 核心检查数据库 |
+| **DDInter 2.0**（[ddinter2.scbdd.com](https://ddinter2.scbdd.com)，Nucleic Acids Res 2025） | 官方口径：2,310 药、302,516 条 DDI、8,598 条机制描述；另含 857 DFI、8,359 DDSI、6,033 重复用药记录。**本项目实际入库：1,971 药 / 234,981 个唯一药对 / 21 条人工审编机制** | **CC BY-NC-SA 4.0** | 核心检查数据库（当前仅接入 DDI） |
 | **DDIExtraction 2013** | 药品说明书文本标注的 DDI 关系，约 784 篇训练文档 | 公开（学术） | NLP 关系抽取训练/评测 |
 | **DDIMDL** | 572 药、37,264 条 DDI、65 种事件类型 | 公开 | 事件预测实验基准 |
 | **TwoSIDES** | 645 药、约 465 万药物对-副作用关联 | 研究用途 | 可选扩展（不进入 MVP） |
@@ -386,7 +388,7 @@ CREATE TABLE alias (
 > 故事线：**查得准（人工审编库）→ 抽得出（NLP 自动化）→ 推得到（预测模型）**，覆盖「知识 + 感知 + 预测」三个层面。
 
 **层次 A · 检索式检查（主线，确定性输出）**
-SQL 精确查询 DDInter 关系表，配合别名映射做药名归一化。中文对齐策略：自建「中文通用名 ↔ 英文通用名」映射表（覆盖常见慢病药 300~500 种即可满足演示），辅以 CMeKG 术语；分子层面可利用 DDInter 自带的 DrugBank / PubChem / ChEMBL ID 去歧义。响应目标 < 100 ms。
+SQL 精确查询 DDInter 关系表，配合别名映射做药名归一化。中文对齐策略：自建「中文通用名 ↔ 英文通用名」映射表（已覆盖 **366 种常见药**，拼音首字母由 `pypinyin` 自动生成）；分子层面可利用 DDInter 自带的 DrugBank / PubChem / ChEMBL ID 去歧义。响应实测：10 药 45 组合 2.47 ms，20 药 190 组合 8.97 ms。
 
 **层次 B · NLP 关系抽取（辅助，展示「AI 扩库」）**
 输入一段说明书或文献文本，抽取三元组（药物 A，药物 B，相互作用类型）。模型二选一：PaddleNLP **UIE**（零样本、CPU 实时推理，成本最低）或 **BioBERT** 在 DDIExtraction 2013 上微调（有明确文献 F1 基准）。网站呈现为「AI 文献抽取实验室」：高亮实体 → 输出抽取三元组 → 一键与主库比对（新增 / 已存在）。
@@ -422,9 +424,11 @@ pytest backend/tests -k checker -v
 | **W0** | 仓库初始化、README、许可与目录约定 | 仓库可克隆、方案可读 | ✅ 完成 |
 | **W1** | 数据管道：下载 → 清洗入库 → 别名表 v1 → FastAPI | `/api/check` 返回真实数据 | ✅ 完成（1971 药 / 234,981 对入库，31 测试通过） |
 | **W2** | 前端骨架 + 药单页 + 检查结果页 | 3 组演示药单全流程可跑 | ✅ 完成（六页全成型，前后端联调打通） |
-| **W3** | 图谱页 + DDSI/DFI/重复用药 + 报告导出 | 五个页面全部成型 | 🔄 图谱页/报告导出已完成；DDSI/DFI 进行中 |
-| **W4** | NLP 模块（UIE 优先）+ 预测实验（选做） | 实验室页可演示 | 🔄 规则基线可演示；模型待训练 |
-| **W5** | 测试 + 视觉打磨 + 部署 + 文档 | 交付物齐全 | 🔄 单测/接口测试/一键启动/单服务部署就绪 |
+| **W3** | 图谱页 + DDSI/DFI/重复用药 + 报告导出 | 五个页面全部成型 | 🟡 图谱页 / 报告导出已完成；**DDSI / DFI / 重复用药未实现**（官方仅开放 DDI 的 CSV 下载，需另选数据源） |
+| **W4** | NLP 模块（UIE 优先）+ 预测实验（选做） | 实验室页可演示 | 🟡 词典+模式规则基线可演示；**UIE/BioBERT 微调与事件预测未开始**（`ml/` 待建立） |
+| **W5** | 测试 + 视觉打磨 + 部署 + 文档 | 交付物齐全 | 🟡 31 用例、单服务部署、[docs/](saferx/docs/) 五份文档与兜底截图已完成；**课程报告正文与正式上线未完成** |
+
+**交付物索引**：[数据字典](saferx/docs/data_dictionary.md) · [接口文档](saferx/docs/api.md) · [演示脚本](saferx/docs/demo_script.md) · [数据画像](saferx/docs/data_profile.md) · [页面截图](saferx/deploy/screenshots/)
 
 **分支与提交规范**：`main` 始终可运行；功能开发在 `feature/w1-data-pipeline` 式分支完成。提交信息遵循 Conventional Commits（`feat:` `fix:` `docs:` `data:`），里程碑打 tag（`w1-done` … `w5-submit`）。`data/external/alias.csv` 等入库数据的修改单独提交，message 注明修改依据。
 

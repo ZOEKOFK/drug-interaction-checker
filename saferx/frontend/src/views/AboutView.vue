@@ -1,24 +1,48 @@
 <script setup>
-const dataSources = [
+import { computed, onMounted, ref } from 'vue'
+import { getStats } from '../api/client.js'
+
+/* 规模数字一律读后端 meta，不在前端硬编码官方口径 */
+const stats = ref(null)
+onMounted(async () => {
+  stats.value = await getStats()
+})
+const fmt = (n) => (n ?? 0).toLocaleString()
+const pct = (a, b) => (b ? `${((a / b) * 100).toFixed(1)}%` : '—')
+
+const OFFICIAL_DRUGS = 2310
+
+const dataSources = computed(() => [
   {
     name: 'DDInter 2.0',
-    scale: '2,310 种药物 · 302,516 条 DDI · 8,598 条机制描述',
+    scale: `官方 ${fmt(OFFICIAL_DRUGS)} 种药物 / ${fmt(302516)} 条 DDI；本项目实际入库 ${fmt(stats.value?.drugs)} 种药物 / ${fmt(stats.value?.ddi_pairs)} 个唯一药对`,
     license: 'CC BY-NC-SA 4.0',
-    usage: '核心检查数据库（含 DDI / DFI / DDSI / 重复用药）'
+    usage: '核心检查数据库 —— 当前只接入 DDI 关系；DFI（药物-食物）、DDSI（药物-疾病）、重复用药为规划项，尚未实现'
   },
   {
     name: 'DDIExtraction 2013 Corpus',
     scale: '约 784 篇 DrugBank 说明书标注文档',
     license: '公开（学术用途）',
-    usage: 'NLP 关系抽取训练与评测'
+    usage: 'NLP 关系抽取评测（规划中，当前为词典+模式规则基线）'
   },
   {
     name: 'DDIMDL',
     scale: '572 种药物 · 37,264 条 DDI · 65 种事件类型',
     license: '公开',
-    usage: 'DDI 事件预测实验基准'
+    usage: 'DDI 事件预测实验基准（选做，未开始）'
   }
-]
+])
+
+const coverage = computed(() => {
+  const s = stats.value
+  if (!s) return []
+  return [
+    { k: '药物覆盖', v: `${fmt(s.drugs)} / ${fmt(OFFICIAL_DRUGS)}`, note: `官方库的 ${pct(s.drugs, OFFICIAL_DRUGS)}` },
+    { k: '中文通用名覆盖', v: `${fmt(s.drugs_with_cn)} / ${fmt(s.drugs)}`, note: `可中文检索的药物占 ${pct(s.drugs_with_cn, s.drugs)}，其余需用英文名` },
+    { k: '机制文本覆盖', v: `${fmt(s.mechanisms_covered_pairs)} / ${fmt(s.ddi_pairs)} 对`, note: '仅人工审编的经典案例有中文机制，其余显示「暂无」' },
+    { k: '分级未知记录', v: `${fmt(s.levels?.Unknown)} 对`, note: `占全部药对 ${pct(s.levels?.Unknown, s.ddi_pairs)}，界面标注为「分级未知」而非「无风险」` }
+  ]
+})
 
 const references = [
   'Xiong G, et al. DDInter 2.0: an enhanced drug interaction resource with expanded data coverage, new interaction types, and improved user interface. Nucleic Acids Research, 2025, 53(D1): D1356–D1362.',
@@ -30,8 +54,8 @@ const references = [
 const stack = [
   { name: '前端', detail: 'Vue 3 · Vite · Tailwind CSS · Pinia · ECharts' },
   { name: '后端', detail: 'FastAPI · SQLite（无序对规范化 + 复合唯一索引）' },
-  { name: '数据管道', detail: 'DDInter 2.0 CSV 清洗入库 · 中英别名映射表' },
-  { name: '模型层', detail: 'PaddleNLP UIE / BioBERT 关系抽取 · 分子指纹事件预测' }
+  { name: '数据管道', detail: 'DDInter 2.0 CSV 清洗入库 · 中英别名映射表（366 种中文名 + 拼音首字母）' },
+  { name: '模型层', detail: '当前为词典 + 模式规则基线；PaddleNLP UIE / BioBERT 微调与事件预测为规划项' }
 ]
 </script>
 
@@ -48,7 +72,7 @@ const stack = [
     </div>
 
     <!-- 免责声明 -->
-    <section class="card p-6 border-l-4 border-l-risk-moderate">
+    <section class="card card-accent p-6">
       <h2 class="font-bold flex items-center gap-2">
         <svg class="w-5 h-5 text-risk-moderate" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" stroke-linejoin="round" /><path d="M12 9v4M12 17h.01" stroke-linecap="round" />
@@ -89,6 +113,30 @@ const stack = [
         DDInter 2.0 采用 CC BY-NC-SA 4.0 许可：允许学术使用，须署名来源、禁止商用、衍生数据须相同方式共享。
         本项目为课程作业，符合上述条款，页脚已注明出处。
       </p>
+    </section>
+
+    <!-- 数据覆盖与已知局限 -->
+    <section>
+      <h2 class="text-lg font-extrabold tracking-tight">数据覆盖与已知局限</h2>
+      <p class="mt-1.5 text-sm text-ink-soft leading-relaxed max-w-3xl">
+        下列数字均由 <code class="text-xs bg-primary-50 text-primary px-1.5 py-0.5 rounded">/api/health</code>
+        从数据库实时读出，不使用官方宣传口径。把边界写清楚，比把覆盖率说漂亮更重要。
+      </p>
+      <div class="mt-4 grid sm:grid-cols-2 gap-4">
+        <div v-for="c in coverage" :key="c.k" class="card p-4">
+          <div class="flex items-baseline justify-between gap-3">
+            <p class="text-sm font-bold text-ink">{{ c.k }}</p>
+            <p class="text-lg font-extrabold text-primary tabular-nums">{{ c.v }}</p>
+          </div>
+          <p class="mt-1.5 text-xs text-ink-faint leading-relaxed">{{ c.note }}</p>
+        </div>
+      </div>
+      <ul class="mt-3 text-xs text-ink-soft space-y-1.5 list-disc pl-5 leading-relaxed">
+        <li>DDInter 官方库含 2,310 种药物，本项目清洗后实际入库 1,971 种（差异来自跨分类重复与无效记录过滤）。</li>
+        <li>英文名未收录的药（如部分国产仿制药商品名）无法检索——这是审编库的覆盖边界，不是「无风险」。</li>
+        <li>拼音首字母存在 5 组天然冲突（如 klms 同时对应克拉霉素与克林霉素），冲突项不做映射，请改用中文全名。</li>
+        <li>查不到记录 ≠ 安全：界面与导出报告均固定展示该提示。</li>
+      </ul>
     </section>
 
     <!-- 技术架构 -->

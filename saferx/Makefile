@@ -8,11 +8,13 @@
 #   make build-web   # 前端生产构建（backend 将自动托管 frontend/dist）
 #   make start       # 一键启动（initdb -> uvicorn + vite dev）
 #   make prod        # 生产模式：构建前端 + 单服务启动（仅 8000 端口）
+#   make profile     # 重新生成数据画像图表与文档（docs/）
+#   make shots       # 重新生成演示兜底截图（deploy/screenshots，需服务已启动）
 
 PY ?= python
 PORT ?= 8000
 
-.PHONY: data clean alias initdb test api web build-web start prod docker help
+.PHONY: data clean alias initdb test api web build-web start prod docker profile shots help
 
 ## 数据管道
 data:
@@ -52,5 +54,12 @@ prod: initdb build-web
 docker:
 	docker compose -f deploy/docker-compose.yml up --build
 
+## 文档与截图
+profile:
+	$(PY) pipelines/profile_data.py
+
+shots:
+	$(PY) deploy/capture_screenshots.py --base http://127.0.0.1:$(PORT)
+
 help:
-	@echo "SafeRx 构建入口：make data | initdb | test | api | web | build-web | start | prod | docker"
+	@echo "SafeRx 构建入口：make data | initdb | test | api | web | build-web | start | prod | docker | profile | shots"
