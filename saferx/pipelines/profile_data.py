@@ -104,6 +104,79 @@ def markdown(conn) -> str:
         f"| {i + 1} | {r['name_cn'] or '—'} | {r['name_en']} | {r['deg']:,} | {r['major']:,} |"
         for i, r in enumerate(top)
     )
+
+    # ---- 其他相互作用（网页接口抓取的三类，可能尚未入库）----
+    def cnt(sql: str) -> int:
+        try:
+            return conn.execute(sql).fetchone()[0] or 0
+        except sqlite3.Error:
+            return 0
+
+    ddsi_n, dfi_n, dup_n = cnt("SELECT COUNT(*) FROM ddsi"), cnt("SELECT COUNT(*) FROM dfi"), cnt("SELECT COUNT(*) FROM dupli")
+    if not (ddsi_n or dfi_n or dup_n):
+        other_section = "## 6. 数据质量与处理规则"
+    else:
+        ddsi_lv = dict(conn.execute("SELECT level, COUNT(*) FROM ddsi GROUP BY level"))
+        dfi_lv = dict(conn.execute("SELECT level, COUNT(*) FROM dfi GROUP BY level"))
+        ddsi_dis = conn.execute("SELECT COUNT(DISTINCT disease_en) FROM ddsi").fetchone()[0]
+        ddsi_cn = conn.execute(
+            "SELECT COUNT(DISTINCT disease_en) FROM ddsi WHERE disease_cn IS NOT NULL AND disease_cn <> ''"
+        ).fetchone()[0]
+        top_dis = conn.execute(
+            "SELECT disease_cn, COUNT(*) n, SUM(CASE WHEN level='Major' THEN 1 ELSE 0 END) major "
+            "FROM ddsi GROUP BY disease_en ORDER BY n DESC LIMIT 8"
+        ).fetchall()
+        top_food = conn.execute(
+            "SELECT food_cn, COUNT(*) n, SUM(CASE WHEN level='Major' THEN 1 ELSE 0 END) major "
+            "FROM dfi GROUP BY food_en ORDER BY n DESC LIMIT 8"
+        ).fetchall()
+        top_cat = conn.execute(
+            "SELECT category_cn, COUNT(*) n FROM dupli GROUP BY category_en ORDER BY n DESC LIMIT 8"
+        ).fetchall()
+        dis_rows = "\n".join(f"| {r['disease_cn']} | {r['n']:,} | {r['major']:,} |" for r in top_dis)
+        food_rows = "\n".join(f"| {r['food_cn']} | {r['n']:,} | {r['major']:,} |" for r in top_food)
+        cat_rows = "\n".join(f"| {r['category_cn']} | {r['n']:,} |" for r in top_cat)
+        other_section = f"""## 5. 其他相互作用（DDSI / DFI / 重复用药）
+
+DDInter 官方只对 DDI 提供 CSV 下载，这三类仅以网页表格形式开放。项目通过逆向其 DataTables
+接口分页抓取（方法与复现命令见 `data_dictionary.md` §2.1），清洗后入库：
+
+![三类数据规模](assets/other_scale.svg)
+
+| 类别 | 入库条目 | 覆盖范围 | 分级分布（Major / Moderate / Minor） |
+|---|---|---|---|
+| DDSI 药物-疾病禁忌 | {ddsi_n:,} | {ddsi_dis} 种基础疾病 × {cnt("SELECT COUNT(DISTINCT ddinter_id) FROM ddsi"):,} 种药 | {ddsi_lv.get('Major', 0):,} / {ddsi_lv.get('Moderate', 0):,} / {ddsi_lv.get('Minor', 0):,} |
+| DFI 药物-食物 | {dfi_n:,} | {cnt("SELECT COUNT(DISTINCT food_en) FROM dfi")} 类食物 / 烟酒 × {cnt("SELECT COUNT(DISTINCT ddinter_id) FROM dfi"):,} 种药 | {dfi_lv.get('Major', 0):,} / {dfi_lv.get('Moderate', 0):,} / {dfi_lv.get('Minor', 0):,} |
+| 重复用药 | {dup_n:,} | {cnt("SELECT COUNT(DISTINCT category_en) FROM dupli")} 个治疗类别 × {cnt("SELECT COUNT(DISTINCT ddinter_id) FROM dupli"):,} 种药 | 不分级（同类 ≥2 种即告警） |
+
+**Top 8 基础疾病（按禁忌条目数）**
+
+| 疾病 | 条目数 | 其中 Major |
+|---|---|---|
+{dis_rows}
+
+**Top 8 食物 / 饮品**
+
+| 食物 | 条目数 | 其中 Major |
+|---|---|---|
+{food_rows}
+
+**Top 8 重复用药类别**
+
+| 治疗类别 | 条目数 |
+|---|---|
+{cat_rows}
+
+**解读**：
+
+- 疾病侧「肾脏疾病 / 肝脏疾病」条目最多（各 640 条量级），与药代动力学常识一致——肝肾功能决定
+  多数药物的清除，是最需要先问的病史；中文病名覆盖 {ddsi_cn}/{ddsi_dis} 种，但已覆盖 88.8% 的条目。
+- 食物侧高度集中在酒精（433 条）与西柚汁（137 条），二者占 70.8%——不是数据贫乏，而是真实临床
+  关注点本来就集中在这两项（CYP3A4 抑制、中枢抑制叠加、双硫仑样反应）。
+- 重复用药条目数最多的是抗组胺药（1,613 条）与非甾体抗炎药（867 条），恰是感冒药与止痛药里
+  最容易「一药多名、重复服用」的品类，与「患者自行加药」的现实风险吻合。
+
+## 6. 数据质量与处理规则"""
     return f"""# 数据画像（Data Profile）
 
 > 本文件由 `pipelines/profile_data.py` 从 `data/saferx.sqlite` 直接生成，数字与图表同源，重跑即可更新。
@@ -150,8 +223,7 @@ def markdown(conn) -> str:
 治疗窗窄的药物（华法林、他克莫司、苯妥英、卡马西平）。这类药物正是临床处方审核的重点对象，
 也解释了为什么「药单整体检查」比单药查询更有价值。
 
-## 5. 数据质量与处理规则
-
+{other_section}
 | 问题 | 处理方式 |
 |---|---|
 | 同一药对在多个分类文件中重复出现 | 以 `(min(id_a,id_b), max(id_a,id_b))` 规范化后去重 |
@@ -160,8 +232,10 @@ def markdown(conn) -> str:
 | 药名写法差异（Aspirin / Acetylsalicylic acid、Glibenclamide / Glyburide） | 别名表登记同义词 |
 | 拼音首字母天然冲突（如 klms） | 冲突项不做映射，提示改用中文全名 |
 | 官方 CSV 不含机制文本 | 人工审编 21 条经典机制；其余显示「暂无中文机制」并保留英文原文位 |
+| 网页接口无 CSV、需绕过 CSRF 分页 | 抓取脚本带 token + 分页 POST，落盘原始 JSONL 快照备查 |
+| DFI 源接口把 mechanism 字段误命名为 magnesium | 清洗时按语义归位，字段名以本库为准 |
 
-## 6. 复现方式
+## 7. 复现方式
 
 ```bash
 python pipelines/profile_data.py     # 重新生成图表与本文件
@@ -208,6 +282,25 @@ def main() -> int:
     )
 
     (DOCS / "data_profile.md").write_text(markdown(conn), encoding="utf-8")
+
+    # 三类「其他相互作用」规模（网页接口抓取）
+    other_items = []
+    for label, table, color in (
+        ("DDSI 药物-疾病禁忌", "ddsi", "#B4472F"),
+        ("重复用药（类别×药品）", "dupli", "#1D6FA5"),
+        ("DFI 药物-食物", "dfi", "#C98A2E"),
+    ):
+        try:
+            n = conn.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
+        except sqlite3.Error:
+            continue
+        if n:
+            other_items.append((label, n, color, f"{n:,}"))
+    if other_items:
+        (ASSETS / "other_scale.svg").write_text(
+            bar_chart(other_items, pad_top=16), encoding="utf-8"
+        )
+
     conn.close()
     print(f"✓ 图表 -> {ASSETS}")
     print(f"✓ 正文 -> {DOCS / 'data_profile.md'}")

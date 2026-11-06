@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="152" viewBox="0 0 680 152" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif">
+<rect width="680" height="152" fill="#FFFFFF"/>
+<text x="8" y="32" font-size="13" fill="#1F2A26">DDSI 药物-疾病禁忌</text>
+<rect x="180" y="20" width="380" height="18" rx="4" fill="#F0F8F5"/>
+<rect x="180" y="20" width="380" height="18" rx="4" fill="#B4472F"/>
+<text x="676" y="34" font-size="13" font-weight="600" fill="#1F2A26" text-anchor="end">8,009</text>
+<text x="8" y="72" font-size="13" fill="#1F2A26">重复用药（类别×药品）</text>
+<rect x="180" y="60" width="380" height="18" rx="4" fill="#F0F8F5"/>
+<rect x="180" y="60" width="269" height="18" rx="4" fill="#1D6FA5"/>
+<text x="676" y="74" font-size="13" font-weight="600" fill="#1F2A26" text-anchor="end">5,663</text>
+<text x="8" y="112" font-size="13" fill="#1F2A26">DFI 药物-食物</text>
+<rect x="180" y="100" width="380" height="18" rx="4" fill="#F0F8F5"/>
+<rect x="180" y="100" width="38" height="18" rx="4" fill="#C98A2E"/>
+<text x="676" y="114" font-size="13" font-weight="600" fill="#1F2A26" text-anchor="end">805</text>
+</svg>
