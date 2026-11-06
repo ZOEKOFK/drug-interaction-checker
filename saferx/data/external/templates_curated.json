@@ -1,0 +1,30 @@
+[
+  {
+    "id": "tpl-1",
+    "name": "高血压 + 房颤",
+    "desc": "慢病共病典型组合：抗凝 + 抗心律失常 + 降压 + 利尿",
+    "drugs": ["Warfarin", "Amiodarone", "Digoxin", "Amlodipine", "Hydrochlorothiazide"],
+    "expected": "华法林 + 胺碘酮、胺碘酮 + 地高辛等多条严重风险，戏剧性强"
+  },
+  {
+    "id": "tpl-2",
+    "name": "他汀 + 抗感染",
+    "desc": "调脂患者遇大环内酯类抗生素的经典酶抑制场景",
+    "drugs": ["Simvastatin", "Clarithromycin", "Amlodipine"],
+    "expected": "辛伐他汀 + 克拉霉素严重风险（CYP3A4，横纹肌溶解）"
+  },
+  {
+    "id": "tpl-3",
+    "name": "抑郁 + 疼痛",
+    "desc": "精神科用药与镇痛药联用的 5-羟色胺风险",
+    "drugs": ["Paroxetine", "Tramadol", "Ibuprofen"],
+    "expected": "帕罗西汀 + 曲马多严重风险（5-羟色胺综合征）"
+  },
+  {
+    "id": "tpl-4",
+    "name": "慢病日常（对照）",
+    "desc": "最常见的慢病日常用药组合，演示分级未知与低风险记录的呈现",
+    "drugs": ["Amlodipine", "Metformin", "Atorvastatin"],
+    "expected": "含分级未知记录——演示「未收录/分级未知 ≠ 安全」的诚实提示"
+  }
+]

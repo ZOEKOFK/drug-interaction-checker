@@ -1,0 +1,230 @@
+@import "tailwindcss";
+
+/* ============ SafeRx 设计 token ============ */
+@theme {
+  /* 医疗蓝绿主色系 */
+  --color-primary: #0F6E56;
+  --color-primary-dark: #0B5643;
+  --color-primary-bright: #12886A;
+  --color-primary-soft: #BFE0D6;
+  --color-primary-100: #DCF0EA;
+  --color-primary-50: #F0F8F5;
+
+  /* 风险三色（严格按方案） */
+  --color-risk-major: #A32D2D;
+  --color-risk-major-bg: #F8E9E9;
+  --color-risk-moderate: #854F0B;
+  --color-risk-moderate-bg: #F9EFE0;
+  --color-risk-minor: #3B6D11;
+  --color-risk-minor-bg: #EAF2E1;
+
+  /* 中性色 */
+  --color-ink: #1F2A26;
+  --color-ink-soft: #55655E;
+  --color-ink-faint: #8CA096;
+  --color-line: #DCE9E4;
+  --color-paper: #F6FAF8;
+
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Helvetica Neue",
+    Arial, sans-serif;
+
+  --radius-card: 12px;
+}
+
+/* ============ 基础 ============ */
+html {
+  scroll-behavior: smooth;
+}
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+  padding-bottom: 44px; /* 给常驻免责声明条留位 */
+}
+
+::selection {
+  background: var(--color-primary-soft);
+}
+
+/* ============ 通用组件类 ============ */
+.card {
+  background: #fff;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-card);
+  box-shadow: 0 1px 2px rgba(15, 110, 86, 0.04);
+}
+
+.card-hover {
+  transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+}
+.card-hover:hover {
+  box-shadow: 0 10px 24px -12px rgba(15, 110, 86, 0.25);
+  transform: translateY(-2px);
+  border-color: var(--color-primary-soft);
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: 999px;
+  padding: 10px 22px;
+  font-weight: 600;
+  font-size: 15px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+  box-shadow: 0 6px 16px -8px rgba(15, 110, 86, 0.55);
+}
+.btn-primary:hover {
+  background: var(--color-primary-dark);
+}
+.btn-primary:active {
+  transform: translateY(1px);
+}
+.btn-primary:disabled {
+  background: var(--color-ink-faint);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: #fff;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary-soft);
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.btn-ghost:hover {
+  background: var(--color-primary-50);
+  border-color: var(--color-primary-bright);
+}
+
+/* 徽章 */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  line-height: 1.5;
+}
+.badge-dot::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: currentColor;
+}
+.badge-major { background: var(--color-risk-major-bg); color: var(--color-risk-major); }
+.badge-moderate { background: var(--color-risk-moderate-bg); color: var(--color-risk-moderate); }
+.badge-minor { background: var(--color-risk-minor-bg); color: var(--color-risk-minor); }
+.badge-unknown { background: #EDF2F0; color: var(--color-ink-soft); }
+.badge-clear { background: var(--color-primary-100); color: var(--color-primary); }
+
+/* ============ 首页 hero：心电线 + 点阵底纹 ============ */
+.dot-grid {
+  background-image: radial-gradient(var(--color-primary-soft) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+.ekg-line {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: ekg-dash 3.2s linear infinite;
+}
+@keyframes ekg-dash {
+  from { stroke-dashoffset: 1000; }
+  to { stroke-dashoffset: -1000; }
+}
+
+.float-soft {
+  animation: float-soft 5s ease-in-out infinite;
+}
+@keyframes float-soft {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* ============ 药盒 chip（胶囊造型） ============ */
+.pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  background: #fff;
+  border: 1px solid var(--color-line);
+  border-radius: 999px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(15, 110, 86, 0.08);
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+  user-select: none;
+}
+.pill:hover {
+  box-shadow: 0 4px 12px -4px rgba(15, 110, 86, 0.3);
+  transform: translateY(-1px);
+}
+.pill::before {
+  /* 左侧胶囊帽（按药品类别着色） */
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 30%;
+  background: var(--pill-cap, var(--color-primary));
+}
+.pill::after {
+  /* 胶囊接缝 */
+  content: "";
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  left: 30%;
+  border-left: 1.5px solid rgba(31, 42, 38, 0.14);
+}
+
+/* ============ 风险卡片展开动画 ============ */
+.expandable {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s ease;
+}
+.expandable.open {
+  grid-template-rows: 1fr;
+}
+.expandable > div {
+  overflow: hidden;
+}
+
+/* ============ 滚动条 ============ */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary-soft);
+  border-radius: 999px;
+  border: 2px solid var(--color-paper);
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ============ 打印（导出报告用） ============ */
+@media print {
+  body { padding-bottom: 0; }
+  .no-print { display: none !important; }
+}

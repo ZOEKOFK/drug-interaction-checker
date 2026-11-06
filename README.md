@@ -93,13 +93,27 @@
 
 ```bash
 git clone https://github.com/ZOEKOFK/drug-interaction-checker.git
-cd drug-interaction-checker
+cd drug-interaction-checker/saferx   # monorepo 根（Makefile 所在目录）
 
-cp .env.example .env          # 配置数据库路径、模型路径、DEBUG 开关
-make data                     # 下载 DDInter 2.0 CSV → 清洗 → 生成 processed 表
-make initdb                   # 建库建表建索引，产出 data/saferx.sqlite
+cp .env.example .env          # 配置数据库路径、DEBUG 开关
+make data                     # 下载 DDInter 2.0 CSV（约 30MB）→ 清洗 → processed 表
+make initdb                   # 别名表 + 建库建索引，产出 data/saferx.sqlite
 make api                      # 启动后端  http://127.0.0.1:8000/docs
-make web                      # 启动前端  http://127.0.0.1:5173
+make web                      # 启动前端  http://localhost:5173
+```
+
+一键启动（自动建库 + 装依赖 + 双服务）：
+
+```bash
+bash deploy/start_all.sh      # Linux / macOS / Git Bash
+deploy\start_all.bat          # Windows
+# 等价于 make start
+```
+
+生产模式（单服务：FastAPI 直接托管前端构建产物，仅 8000 端口）：
+
+```bash
+make prod                     # initdb + 前端构建 + uvicorn 0.0.0.0:8000
 ```
 
 无 `make` 环境（Windows 原生）可直接调用脚本：
@@ -107,22 +121,31 @@ make web                      # 启动前端  http://127.0.0.1:5173
 ```bash
 python pipelines/download_ddinter.py && python pipelines/clean_ddinter.py
 python pipelines/build_alias_table.py && python pipelines/init_db.py
-uvicorn backend.app.main:app --reload --port 8000
-npm --prefix frontend run dev
+cd backend && python -m uvicorn app.main:app --reload --port 8000
+cd frontend && npm install && npm run dev
+```
+
+Docker（可选）：
+
+```bash
+docker compose -f deploy/docker-compose.yml up --build
 ```
 
 ### Makefile 目标
 
 | 命令 | 作用 |
 |---|---|
-| `make data` | 下载并清洗 DDInter 2.0，生成入库用最终表 |
-| `make initdb` | 建库建表建索引，灌入数据（可重复执行，幂等） |
+| `make data` | 下载 DDInter 2.0 官方 CSV（14 个分类文件） |
+| `make initdb` | 清洗 + 别名表 + 建库建索引（可重复执行，幂等） |
 | `make api` | 启动 FastAPI（自动生成 `/docs` 交互文档） |
 | `make web` | 启动 Vite 开发服务器（`/api` 代理到 8000） |
-| `make test` | 运行 pytest 单元测试与接口测试 |
-| `make clean` | 清除生成物（数据、数据库、构建产物） |
+| `make test` | 运行 pytest 单元测试与接口测试（31 个用例） |
+| `make build-web` | 前端生产构建（backend 自动托管 `frontend/dist`） |
+| `make start` | 一键启动（initdb → uvicorn + vite dev） |
+| `make prod` | 生产模式单服务（构建前端 + 0.0.0.0:8000） |
+| `make clean` | 数据清洗重跑（配合 initdb 重建） |
 
-> **数据不进仓库**：`data/raw`、`*.sqlite`、`ml/artifacts` 均已加入 `.gitignore`，克隆后执行 `make data && make initdb` 即可从零重建。
+> **数据不进仓库**：`data/raw`、`data/processed`、`*.sqlite`、`ml/artifacts` 均已加入 `.gitignore`，克隆后执行 `make data && make initdb` 即可从零重建。`data/external/`（人工审编的别名表 / 机制文本 / 模板）随仓库版本化。
 
 ---
 
@@ -397,11 +420,11 @@ pytest backend/tests -k checker -v
 | 阶段 | 目标 | 验收标志 | 状态 |
 |---|---|---|---|
 | **W0** | 仓库初始化、README、许可与目录约定 | 仓库可克隆、方案可读 | ✅ 完成 |
-| **W1** | 数据管道：下载 → 清洗入库 → 别名表 v1 → FastAPI 骨架 | `/api/check` 返回真实数据 | 进行中 |
-| **W2** | 前端骨架 + 药单页 + 检查结果页 | 3 组演示药单全流程可跑 | 计划中 |
-| **W3** | 图谱页 + DDSI/DFI/重复用药 + 报告导出 | 五个页面全部成型 | 计划中 |
-| **W4** | NLP 模块（UIE 优先）+ 预测实验（选做） | 实验室页可演示 | 计划中 |
-| **W5** | 测试 + 视觉打磨 + 部署 + 文档 | 交付物齐全 | 计划中 |
+| **W1** | 数据管道：下载 → 清洗入库 → 别名表 v1 → FastAPI | `/api/check` 返回真实数据 | ✅ 完成（1971 药 / 234,981 对入库，31 测试通过） |
+| **W2** | 前端骨架 + 药单页 + 检查结果页 | 3 组演示药单全流程可跑 | ✅ 完成（六页全成型，前后端联调打通） |
+| **W3** | 图谱页 + DDSI/DFI/重复用药 + 报告导出 | 五个页面全部成型 | 🔄 图谱页/报告导出已完成；DDSI/DFI 进行中 |
+| **W4** | NLP 模块（UIE 优先）+ 预测实验（选做） | 实验室页可演示 | 🔄 规则基线可演示；模型待训练 |
+| **W5** | 测试 + 视觉打磨 + 部署 + 文档 | 交付物齐全 | 🔄 单测/接口测试/一键启动/单服务部署就绪 |
 
 **分支与提交规范**：`main` 始终可运行；功能开发在 `feature/w1-data-pipeline` 式分支完成。提交信息遵循 Conventional Commits（`feat:` `fix:` `docs:` `data:`），里程碑打 tag（`w1-done` … `w5-submit`）。`data/external/alias.csv` 等入库数据的修改单独提交，message 注明修改依据。
 

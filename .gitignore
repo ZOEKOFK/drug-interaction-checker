@@ -12,7 +12,13 @@
 *.pdf
 !docs/**/*.pdf
 
-# ---------- 数据区（脚本可重建） ----------
+# ---------- 数据区（脚本可重建；monorepo 位于 saferx/） ----------
+saferx/data/raw/
+saferx/data/interim/
+saferx/data/processed/
+saferx/data/*.sqlite
+saferx/data/*.sqlite3
+saferx/data/*.db
 data/raw/
 data/interim/
 data/processed/

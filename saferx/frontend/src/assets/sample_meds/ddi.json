@@ -1,0 +1,149 @@
+[
+  {
+    "a": "DDInter0001", "b": "DDInter0002", "level": "Major",
+    "mechanism_cn": "华法林抑制凝血因子合成，阿司匹林抑制血小板功能，抗凝与抗血小板作用叠加，出血风险显著升高。",
+    "mechanism_en": "The risk of bleeding may be increased when warfarin is combined with aspirin.",
+    "management": "避免常规联用；如确需抗栓联合治疗，应由医师评估获益与风险，密切监测 INR 及出血征象。",
+    "source_id": "DDI-0001"
+  },
+  {
+    "a": "DDInter0001", "b": "DDInter0003", "level": "Major",
+    "mechanism_cn": "胺碘酮抑制 CYP2C9，减慢华法林代谢，INR 升高，出血风险增加。",
+    "mechanism_en": "Amiodarone may increase the anticoagulant effect of warfarin by inhibiting CYP2C9 metabolism.",
+    "management": "联用时华法林通常需减量 30%~50%，加强 INR 监测，警惕出血倾向。",
+    "source_id": "DDI-0002"
+  },
+  {
+    "a": "DDInter0003", "b": "DDInter0004", "level": "Major",
+    "mechanism_cn": "胺碘酮抑制 P-糖蛋白，地高辛清除减少，血药浓度显著升高，中毒风险增加。",
+    "mechanism_en": "Amiodarone increases serum digoxin concentration via P-glycoprotein inhibition.",
+    "management": "联用起始即应将地高辛剂量减半，监测血药浓度与心率，注意恶心、视觉异常等中毒征象。",
+    "source_id": "DDI-0003"
+  },
+  {
+    "a": "DDInter0007", "b": "DDInter0008", "level": "Major",
+    "mechanism_cn": "克拉霉素强效抑制 CYP3A4，辛伐他汀血药浓度大幅升高，横纹肌溶解风险显著增加。",
+    "mechanism_en": "Clarithromycin markedly increases simvastatin exposure via CYP3A4 inhibition, raising the risk of rhabdomyolysis.",
+    "management": "禁止联用；感染期间应暂停辛伐他汀，或改用不经 CYP3A4 代谢的他汀（如普伐他汀）。",
+    "source_id": "DDI-0004"
+  },
+  {
+    "a": "DDInter0014", "b": "DDInter0015", "level": "Moderate",
+    "mechanism_cn": "奥美拉唑抑制 CYP2C19，氯吡格雷活性代谢物生成减少，抗血小板效应降低。",
+    "mechanism_en": "Omeprazole reduces the antiplatelet effect of clopidogrel by inhibiting CYP2C19.",
+    "management": "避免长期联用；必要时改用对 CYP2C19 影响较小的泮托拉唑。",
+    "source_id": "DDI-0005"
+  },
+  {
+    "a": "DDInter0003", "b": "DDInter0016", "level": "Major",
+    "mechanism_cn": "两药均可延长 QT 间期，效应叠加可诱发尖端扭转型室速等严重心律失常。",
+    "mechanism_en": "Combined QT prolongation increases the risk of torsades de pointes.",
+    "management": "尽量避免联用；必须联用时监测心电图 QT 间期与电解质（尤其血钾、血镁）。",
+    "source_id": "DDI-0006"
+  },
+  {
+    "a": "DDInter0006", "b": "DDInter0017", "level": "Major",
+    "mechanism_cn": "噻嗪类利尿剂减少锂的肾脏清除，血锂浓度升高，可致锂中毒。",
+    "mechanism_en": "Hydrochlorothiazide decreases renal lithium clearance, increasing the risk of lithium toxicity.",
+    "management": "联用期间监测血锂浓度，注意意识状态改变、粗大震颤等中毒表现，必要时下调锂盐剂量。",
+    "source_id": "DDI-0007"
+  },
+  {
+    "a": "DDInter0009", "b": "DDInter0010", "level": "Moderate",
+    "mechanism_cn": "两药均具 5-羟色胺能活性，联用增加 5-羟色胺综合征风险（高热、肌阵挛、自主神经紊乱）。",
+    "mechanism_en": "Concomitant use increases the risk of serotonin syndrome.",
+    "management": "谨慎联用，密切观察兴奋、震颤、出汗、心动过速等表现，出现症状及时就医。",
+    "source_id": "DDI-0008"
+  },
+  {
+    "a": "DDInter0002", "b": "DDInter0011", "level": "Moderate",
+    "mechanism_cn": "布洛芬可竞争性占据血小板 COX-1 结合位点，削弱阿司匹林的心血管保护作用，并叠加胃肠出血风险。",
+    "mechanism_en": "Ibuprofen may interfere with the antiplatelet effect of aspirin and increase GI bleeding risk.",
+    "management": "需要镇痛时优先选择对乙酰氨基酚；必须联用时错开给药时间并关注胃肠道反应。",
+    "source_id": "DDI-0009"
+  },
+  {
+    "a": "DDInter0001", "b": "DDInter0011", "level": "Major",
+    "mechanism_cn": "布洛芬抑制血小板功能并损伤胃肠黏膜，与华法林联用显著增加出血风险。",
+    "mechanism_en": "NSAIDs such as ibuprofen significantly increase the risk of bleeding with warfarin.",
+    "management": "避免联用；镇痛首选对乙酰氨基酚，必要时监测 INR 及便潜血。",
+    "source_id": "DDI-0010"
+  },
+  {
+    "a": "DDInter0004", "b": "DDInter0006", "level": "Moderate",
+    "mechanism_cn": "氢氯噻嗪可致低钾血症，低钾增强地高辛对心肌的毒性作用。",
+    "mechanism_en": "Thiazide-induced hypokalemia enhances digoxin toxicity.",
+    "management": "联用期间监测血钾与地高辛浓度，必要时补钾或改用保钾利尿方案。",
+    "source_id": "DDI-0011"
+  },
+  {
+    "a": "DDInter0005", "b": "DDInter0007", "level": "Moderate",
+    "mechanism_cn": "氨氯地平轻度抑制 CYP3A4，辛伐他汀暴露量升高，肌病风险增加。",
+    "mechanism_en": "Amlodipine mildly inhibits CYP3A4 and increases simvastatin exposure.",
+    "management": "联用时辛伐他汀剂量不超过 20 mg/日，注意肌肉酸痛、乏力等肌病信号。",
+    "source_id": "DDI-0012"
+  },
+  {
+    "a": "DDInter0008", "b": "DDInter0013", "level": "Major",
+    "mechanism_cn": "克拉霉素抑制 CYP3A4 与转运体 OATP1B1，阿托伐他汀浓度显著升高，肌病与横纹肌溶解风险增加。",
+    "mechanism_en": "Clarithromycin markedly raises atorvastatin levels via CYP3A4 and OATP1B1 inhibition.",
+    "management": "避免联用；感染期间可暂停他汀或换用不经该途径代谢的他汀。",
+    "source_id": "DDI-0013"
+  },
+  {
+    "a": "DDInter0020", "b": "DDInter0023", "level": "Moderate",
+    "mechanism_cn": "两药效应叠加可致高钾血症，肾功能减退者风险更高。",
+    "mechanism_en": "Combined use may cause hyperkalemia.",
+    "management": "联用期间定期监测血钾与肾功能，限制高钾饮食。",
+    "source_id": "DDI-0014"
+  },
+  {
+    "a": "DDInter0009", "b": "DDInter0011", "level": "Minor",
+    "mechanism_cn": "SSRI 与非甾体抗炎药联用可轻度增加上消化道出血风险。",
+    "mechanism_en": "SSRIs plus NSAIDs slightly increase the risk of upper GI bleeding.",
+    "management": "一般可联用，必要时加用胃黏膜保护剂并观察黑便等征象。",
+    "source_id": "DDI-0015"
+  },
+  {
+    "a": "DDInter0006", "b": "DDInter0012", "level": "Minor",
+    "mechanism_cn": "噻嗪类利尿剂可轻度升高血糖，可能削弱二甲双胍的降糖效果。",
+    "mechanism_en": "Thiazides may modestly increase blood glucose and attenuate metformin efficacy.",
+    "management": "一般可联用，监测血糖变化即可。",
+    "source_id": "DDI-0016"
+  },
+  {
+    "a": "DDInter0003", "b": "DDInter0019", "level": "Moderate",
+    "mechanism_cn": "两药均减慢心率与房室传导，联用可致显著心动过缓或传导阻滞。",
+    "mechanism_en": "Combined negative chronotropic effects may cause bradycardia.",
+    "management": "联用时适当减量并监测心率与心电图，静息心率低于 50 次/分应及时就医。",
+    "source_id": "DDI-0017"
+  },
+  {
+    "a": "DDInter0007", "b": "DDInter0025", "level": "Major",
+    "mechanism_cn": "伊曲康唑强效抑制 CYP3A4，辛伐他汀浓度可升高数十倍，横纹肌溶解风险高。",
+    "mechanism_en": "Itraconazole strongly inhibits CYP3A4, greatly increasing simvastatin exposure.",
+    "management": "禁止联用；抗真菌治疗期间暂停辛伐他汀，或换用不经 CYP3A4 代谢的他汀。",
+    "source_id": "DDI-0018"
+  },
+  {
+    "a": "DDInter0004", "b": "DDInter0026", "level": "Major",
+    "mechanism_cn": "维拉帕米抑制 P-糖蛋白，地高辛血药浓度明显升高，中毒风险增加。",
+    "mechanism_en": "Verapamil increases digoxin concentration via P-glycoprotein inhibition.",
+    "management": "联用时地高辛减量，监测血药浓度与心率。",
+    "source_id": "DDI-0019"
+  },
+  {
+    "a": "DDInter0027", "b": "DDInter0028", "level": "Moderate",
+    "mechanism_cn": "两药互为肝酶诱导剂，相互加速代谢，双方血药浓度均可能下降，疗效减弱。",
+    "mechanism_en": "Mutual hepatic enzyme induction lowers both drug levels.",
+    "management": "联用需监测两药血药浓度，必要时调整剂量。",
+    "source_id": "DDI-0020"
+  },
+  {
+    "a": "DDInter0002", "b": "DDInter0024", "level": "Moderate",
+    "mechanism_cn": "糖皮质激素与阿司匹林联用增加消化性溃疡与胃肠出血风险。",
+    "mechanism_en": "Corticosteroids increase the risk of GI ulceration and bleeding with aspirin.",
+    "management": "联用可考虑加用抑酸药保护胃黏膜，观察腹痛、黑便等表现。",
+    "source_id": "DDI-0021"
+  }
+]
