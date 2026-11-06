@@ -1,0 +1,77 @@
+# ============================================================
+# SafeRx / drug-interaction-checker
+# 原则：原始数据、生成物、模型产物、依赖目录一律不入库，
+#      任何环境执行 `make data && make initdb` 即可重建。
+# ============================================================
+
+# ---------- 项目内部文档（不入库） ----------
+# 开题方案、课程作业等本地材料仅在本地保留
+药物相互作用检查器-项目完整方案.md
+医疗人工智能课程作业-*.docx
+*.docx
+*.pdf
+!docs/**/*.pdf
+
+# ---------- 数据区（脚本可重建） ----------
+data/raw/
+data/interim/
+data/processed/
+data/*.sqlite
+data/*.sqlite3
+data/*.db
+
+# ---------- 模型产物（体积大，按需训练导出） ----------
+ml/artifacts/
+ml/data/
+*.pt
+*.pth
+*.bin
+*.onnx
+*.safetensors
+*.ckpt
+
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# ---------- Node / 前端 ----------
+node_modules/
+dist/
+dist-ssr/
+.vite/
+*.local
+
+# ---------- 环境变量与密钥 ----------
+.env
+.env.*
+!.env.example
+
+# ---------- 编辑器 / 系统 ----------
+.idea/
+.vscode/
+.trae/
+.workbuddy/
+.screenshots/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---------- 日志与临时文件 ----------
+*.log
+npm-debug.log*
+yarn-error.log*
+tmp/
+temp/
+
+# ---------- 部署产物 ----------
+deploy/docker-data/
+deploy/*.sqlite
