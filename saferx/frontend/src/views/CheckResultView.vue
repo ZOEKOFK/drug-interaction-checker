@@ -5,6 +5,7 @@ import { useMedStore } from '../stores/medications.js'
 import { useResultStore } from '../stores/results.js'
 import RiskCard from '../components/RiskCard.vue'
 import RiskDonut from '../components/RiskDonut.vue'
+import OtherRiskCard from '../components/OtherRiskCard.vue'
 
 const router = useRouter()
 const medStore = useMedStore()
@@ -43,6 +44,32 @@ const overall = computed(() => {
   return meta
 })
 
+/* ---------- 其他相互作用（DDSI / DFI / 重复用药） ---------- */
+const diseaseRisks = computed(() => resultStore.diseaseRisks)
+const foodRisks = computed(() => resultStore.foodRisks)
+const duplications = computed(() => resultStore.duplications)
+const diseaseCount = computed(
+  () => resultStore.otherSummary.disease.Major + resultStore.otherSummary.disease.Moderate + resultStore.otherSummary.disease.Minor
+)
+const foodCount = computed(
+  () => resultStore.otherSummary.food.Major + resultStore.otherSummary.food.Moderate + resultStore.otherSummary.food.Minor
+)
+const otherTotal = computed(() => diseaseCount.value + foodCount.value + duplications.value.length)
+const otherMajor = computed(
+  () => resultStore.otherSummary.disease.Major + resultStore.otherSummary.food.Major
+)
+
+/** 综合评级：DDI 与「其他相互作用」取更高者 */
+const combinedOverall = computed(() => {
+  const key = report.value?.overall_all || resultStore.summary.overall
+  const meta = OVERALL_META[key] || OVERALL_META.gray
+  const ddiKey = resultStore.summary.overall
+  return {
+    ...meta,
+    escalated: key !== ddiKey && key === 'red'
+  }
+})
+
 function levelTag(level) {
   return { Major: 'badge-major', Moderate: 'badge-moderate', Minor: 'badge-minor' }[level] || ''
 }
@@ -54,6 +81,7 @@ function exportReport() {
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
   const time = new Date().toLocaleString('zh-CN')
   const LEVEL_CN = { Major: '严重', Moderate: '中度', Minor: '轻微', Unknown: '分级未知' }
+  const diseaseCn = (en) => medStore.diseases.find((d) => d.name_en === en)?.name_cn || en
 
   const pairRow = (p) => `
     <tr>
@@ -62,6 +90,26 @@ function exportReport() {
       <td>${esc(p.mechanism_cn || '官方未提供机制描述，可凭来源 ID 到 DDInter 官网查看。')}</td>
       <td>${esc(p.management)}</td>
     </tr>`
+
+  // 其他相互作用（疾病禁忌 / 食物 / 重复用药）
+  const diseaseRows = (r.disease_risks || []).map((x) => `
+    <tr>
+      <td><span class="lv lv-${x.level.toLowerCase()}">${LEVEL_CN[x.level]}</span></td>
+      <td><b>${esc(x.drug.name_cn)}</b> × ${esc(x.disease_cn)}</td>
+      <td>${esc(x.description_en || '')}</td>
+    </tr>`).join('')
+
+  const foodRows = (r.food_risks || []).map((x) => `
+    <tr>
+      <td><span class="lv lv-${x.level.toLowerCase()}">${LEVEL_CN[x.level]}</span></td>
+      <td><b>${esc(x.drug.name_cn)}</b> × ${esc(x.food_cn)}</td>
+      <td>${esc(x.mechanism_cn || '')}${x.management_en ? '<br>' + esc(x.management_en) : ''}</td>
+    </tr>`).join('')
+
+  const dupliBlock = (r.duplications || []).length
+    ? `<h2 style="font-size:15px;margin-top:24px">治疗重复（${r.duplications.length} 组）</h2>
+       ${r.duplications.map((g) => `<p style="font-size:13px"><b>${esc(g.category_cn)}</b>：${g.drugs.map((d) => esc(d.name_cn)).join('、')}</p>`).join('')}`
+    : ''
 
   const html = `<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><title>SafeRx 用药安全报告</title>
 <style>
@@ -86,14 +134,21 @@ td{padding:10px;border-bottom:1px solid #DCE9E4;vertical-align:top}
 <div class="stat"><b class="mo">${r.summary.Moderate}</b><span>中度 Moderate</span></div>
 <div class="stat"><b class="mi">${r.summary.Minor}</b><span>轻微 Minor</span></div>
 <div class="stat"><b class="mu">${r.summary.Unknown ?? 0}</b><span>分级未知 Unknown</span></div>
+<div class="stat"><b>${(r.disease_risks?.length || 0) + (r.food_risks?.length || 0) + (r.duplications?.length || 0)}</b><span>其他相互作用</span></div>
 <div class="stat"><b>${medStore.count}</b><span>药单药物数</span></div>
 </div>
 <h2 style="font-size:15px">药单（${medStore.count} 种）</h2>
 <p style="font-size:13px">${medStore.drugs.map((d) => esc(`${d.name_cn}（${d.name_en}）`)).join('、')}</p>
+${(r.diseases_checked || []).length ? `<p style="font-size:13px;color:#55655E">基础疾病：${r.diseases_checked.map((d) => esc(diseaseCn(d))).join('、')}</p>` : '<p style="font-size:13px;color:#55655E">未提供基础疾病，未执行疾病禁忌检查。</p>'}
 <h2 style="font-size:15px;margin-top:24px">收录的相互作用（${r.pairs.length} 条）</h2>
 ${r.pairs.length ? `<table><tr><th>级别</th><th>药物组合</th><th>机制摘要</th><th>处置建议</th></tr>${r.pairs.map(pairRow).join('')}</table>` : '<p style="font-size:13px">当前药单在数据库中未收录任何相互作用记录。</p>'}
 ${r.unrecorded_pairs.length ? `<h2 style="font-size:15px;margin-top:24px">未收录组合（${r.unrecorded_pairs.length} 对）</h2>
 <p style="font-size:13px">${r.unrecorded_pairs.map((p) => esc(`${p.drug_a.name_cn} × ${p.drug_b.name_cn}`)).join('、')}</p>` : ''}
+${(r.disease_risks || []).length ? `<h2 style="font-size:15px;margin-top:24px">药物 × 基础疾病禁忌（${r.disease_risks.length} 条）</h2>
+<table><tr><th>级别</th><th>药物 × 疾病</th><th>说明（DDInter 原文）</th></tr>${diseaseRows}</table>` : ''}
+${(r.food_risks || []).length ? `<h2 style="font-size:15px;margin-top:24px">药物 × 食物 / 烟酒（${r.food_risks.length} 条）</h2>
+<table><tr><th>级别</th><th>药物 × 食物</th><th>机制与处置</th></tr>${foodRows}</table>` : ''}
+${dupliBlock}
 <div class="disc"><b>免责声明：</b>本报告由 SafeRx 生成，仅供教学与科普参考，<b>不构成诊断或处方依据</b>。检查结果基于 DDInter 2.0 审编数据库（CC BY-NC-SA 4.0），可能不完整或滞后；「未收录」不代表无相互作用。实际用药请咨询医师或药师。</div>
 </div></body></html>`
 
@@ -123,9 +178,10 @@ ${r.unrecorded_pairs.length ? `<h2 style="font-size:15px;margin-top:24px">未收
       <!-- ============ 汇总头 ============ -->
       <div class="flex items-start justify-between flex-wrap gap-4">
         <div>
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-3 flex-wrap">
             <h1 class="text-2xl font-extrabold tracking-tight">检查结果</h1>
-            <span class="badge badge-dot" :class="overall.cls">{{ overall.label }}</span>
+            <span class="badge badge-dot" :class="combinedOverall.cls">{{ combinedOverall.label }}</span>
+            <span v-if="combinedOverall.escalated" class="badge badge-major">含其他相互作用升级</span>
           </div>
           <p class="mt-1 text-sm text-ink-soft">
             {{ medStore.count }} 种药物 · {{ medStore.pairCount }} 个组合完成比对 · {{ report.data_version }}
@@ -221,6 +277,81 @@ ${r.unrecorded_pairs.length ? `<h2 style="font-size:15px;margin-top:24px">未收
         </template>
         <div v-else class="card p-8 text-center text-ink-soft text-sm">当前筛选下暂无记录</div>
       </section>
+
+      <!-- ============ 其他相互作用（疾病禁忌 / 食物 / 重复用药） ============ -->
+      <section v-if="otherTotal" class="mt-8">
+        <div class="flex items-center gap-2 flex-wrap">
+          <h2 class="text-sm font-bold text-ink-soft">其他相互作用</h2>
+          <span class="badge badge-clear">{{ otherTotal }} 项</span>
+          <span v-if="otherMajor" class="badge badge-major">其中 {{ otherMajor }} 项严重</span>
+        </div>
+
+        <!-- 药物 × 疾病 -->
+        <div v-if="diseaseRisks.length" class="mt-3">
+          <h3 class="text-xs font-bold text-ink-faint tracking-wide mb-2">
+            药物 × 基础疾病（DDSI）· {{ diseaseRisks.length }} 条
+          </h3>
+          <div class="space-y-2.5">
+            <OtherRiskCard v-for="(r, i) in diseaseRisks" :key="'d' + i" :item="r" kind="disease" />
+          </div>
+        </div>
+
+        <!-- 药物 × 食物 -->
+        <div v-if="foodRisks.length" class="mt-5">
+          <h3 class="text-xs font-bold text-ink-faint tracking-wide mb-2">
+            药物 × 食物 / 烟酒（DFI）· {{ foodRisks.length }} 条
+          </h3>
+          <div class="space-y-2.5">
+            <OtherRiskCard v-for="(r, i) in foodRisks" :key="'f' + i" :item="r" kind="food" />
+          </div>
+        </div>
+
+        <!-- 治疗重复 -->
+        <div v-if="duplications.length" class="mt-5">
+          <h3 class="text-xs font-bold text-ink-faint tracking-wide mb-2">
+            治疗重复 · {{ duplications.length }} 组
+          </h3>
+          <div class="space-y-2.5">
+            <div
+              v-for="(g, i) in duplications"
+              :key="'g' + i"
+              class="relative card p-4 pl-5 overflow-hidden"
+            >
+              <span class="absolute left-0 top-0 bottom-0 w-1 bg-risk-moderate" />
+              <div class="flex items-center gap-2 flex-wrap">
+                <h4 class="font-bold text-ink text-[14px]">{{ g.category_cn }}</h4>
+                <span class="text-ink-faint text-[11px]">{{ g.category_en }}</span>
+                <span class="badge badge-moderate">{{ g.drugs.length }} 种同类别</span>
+              </div>
+              <p class="mt-2 text-[13px] text-ink leading-relaxed">{{ g.summary_cn }}</p>
+              <div class="mt-2 flex flex-wrap gap-1.5">
+                <span
+                  v-for="d in g.drugs"
+                  :key="d.ddinter_id"
+                  class="px-2.5 py-1 rounded-full bg-paper border border-line text-xs font-medium text-ink-soft"
+                >
+                  {{ d.name_cn }}
+                </span>
+              </div>
+              <details v-if="g.warning_en" class="mt-2">
+                <summary class="text-[11px] text-primary cursor-pointer select-none font-semibold">
+                  展开原始警告（DDInter 英文原文）
+                </summary>
+                <p class="mt-1.5 text-[12px] text-ink-soft leading-relaxed">{{ g.warning_en }}</p>
+              </details>
+            </div>
+          </div>
+        </div>
+
+        <p v-if="report.other_note" class="mt-3 text-xs text-ink-faint leading-relaxed">{{ report.other_note }}</p>
+      </section>
+
+      <div
+        v-else-if="!report.diseases_checked?.length"
+        class="mt-6 card p-4 border-dashed text-xs text-ink-faint leading-relaxed"
+      >
+        未提供基础疾病，已跳过药物-疾病禁忌检查；药单也未命中食物或治疗重复记录。如需检查疾病禁忌，请在药单页选择基础疾病后重新检查。
+      </div>
 
       <!-- ============ 未收录组合（诚实边界） ============ -->
       <section v-if="resultStore.unrecorded.length && (resultStore.filter === 'all' || resultStore.filter === 'unrecorded')" class="mt-8">

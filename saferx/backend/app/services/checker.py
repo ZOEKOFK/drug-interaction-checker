@@ -11,6 +11,7 @@ import datetime
 
 from ..config import get_data_version
 from .alias import drug_brief, resolve_one
+from .other_interactions import check_other
 
 LEVEL_CN = {"Major": "严重", "Moderate": "中度", "Minor": "轻微", "Unknown": "分级未知"}
 LEVEL_ORDER = {"Major": 0, "Moderate": 1, "Minor": 2, "Unknown": 3}  # 展示排序（严重在前）
@@ -22,7 +23,7 @@ FALLBACK_MECHANISM_CN = (
 FALLBACK_MANAGEMENT = "请咨询医师或药师；如出现不适应及时就医，勿自行停药或调整剂量。"
 
 
-def check_meds(conn, meds: list[str]) -> dict:
+def check_meds(conn, meds: list[str], diseases: list[str] | None = None) -> dict:
     # 1) 归一化
     resolved: list = []
     seen: set[str] = set()
@@ -100,6 +101,9 @@ def check_meds(conn, meds: list[str]) -> dict:
     else:
         coverage_note = "药单内无收录记录——未收录不代表无相互作用，请咨询医师或药师。"
 
+    # 4) 其他相互作用（DDSI / DFI / 重复用药）
+    other = check_other(conn, resolved, diseases)
+
     return {
         "unresolved": unresolved,
         "pairs": pairs,
@@ -108,7 +112,17 @@ def check_meds(conn, meds: list[str]) -> dict:
         "checked_at": datetime.datetime.now(datetime.UTC).isoformat(timespec="seconds"),
         "data_version": get_data_version(conn),
         "coverage_note": coverage_note,
+        **other,
+        "overall_all": _combine(summary["overall"], other["other_summary"]["overall"]),
     }
+
+
+_SEVERITY = {"red": 3, "orange": 2, "green": 1, "gray": 0}
+
+
+def _combine(a: str, b: str) -> str:
+    """DDI 与「其他相互作用」的等级取更高者（宁高报不漏报）。"""
+    return a if _SEVERITY.get(a, 0) >= _SEVERITY.get(b, 0) else b
 
 
 def _overall(pairs: list[dict]) -> str:

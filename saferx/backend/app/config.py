@@ -59,6 +59,14 @@ def get_stats(conn) -> dict:
         "aliases": _one("SELECT COUNT(*) FROM alias"),
         "aliases_cn": _one("SELECT COUNT(*) FROM alias WHERE kind = 'cn'"),
         "templates": _one("SELECT COUNT(*) FROM template"),
+        # 其他相互作用（DDInter 网页接口数据）
+        "ddsi_rows": _one("SELECT COUNT(*) FROM ddsi"),
+        "dfi_rows": _one("SELECT COUNT(*) FROM dfi"),
+        "dupli_rows": _one("SELECT COUNT(*) FROM dupli"),
+        "ddsi_diseases": _one("SELECT COUNT(DISTINCT disease_en) FROM ddsi"),
+        "ddsi_cn_covered": _one("SELECT COUNT(*) FROM ddsi WHERE disease_cn IS NOT NULL AND disease_cn <> ''"),
+        "dfi_foods": _one("SELECT COUNT(DISTINCT food_en) FROM dfi"),
+        "dupli_categories": _one("SELECT COUNT(DISTINCT category_en) FROM dupli"),
         "levels": {
             "Major": levels.get("Major", 0),
             "Moderate": levels.get("Moderate", 0),

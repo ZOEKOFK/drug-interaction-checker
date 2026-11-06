@@ -10,11 +10,13 @@
 #   make prod        # 生产模式：构建前端 + 单服务启动（仅 8000 端口）
 #   make profile     # 重新生成数据画像图表与文档（docs/）
 #   make shots       # 重新生成演示兜底截图（deploy/screenshots，需服务已启动）
+#   make other       # 抓取 DDSI/DFI/重复用药（官方无 CSV，走网页表格接口）
+#   make eval        # 检索准确性 A/B（100 条药单 vs 官方检查器）+ NLP 评测
 
 PY ?= python
 PORT ?= 8000
 
-.PHONY: data clean alias initdb test api web build-web start prod docker profile shots help
+.PHONY: data clean alias initdb other test api web build-web start prod docker profile shots eval help
 
 ## 数据管道
 data:
@@ -25,6 +27,11 @@ clean:
 
 alias:
 	$(PY) pipelines/build_alias_table.py
+
+## 其他相互作用（DDSI / DFI / 重复用药）
+other:
+	$(PY) pipelines/download_other_interactions.py
+	$(PY) pipelines/clean_other_interactions.py
 
 initdb: clean alias
 	$(PY) pipelines/init_db.py
@@ -61,5 +68,10 @@ profile:
 shots:
 	$(PY) deploy/capture_screenshots.py --base http://127.0.0.1:$(PORT)
 
+## 评测（检索准确性 + NLP）
+eval:
+	$(PY) pipelines/eval_accuracy.py --n 100
+	$(PY) pipelines/eval_nlp.py
+
 help:
-	@echo "SafeRx 构建入口：make data | initdb | test | api | web | build-web | start | prod | docker | profile | shots"
+	@echo "SafeRx 构建入口：make data | other | initdb | test | api | web | build-web | start | prod | docker | profile | shots | eval"

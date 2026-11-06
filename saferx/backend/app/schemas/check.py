@@ -17,8 +17,13 @@ class DrugBrief(BaseModel):
 # ---------- 检查 ----------
 
 class CheckRequest(BaseModel):
-    """POST /api/check 请求体：药单（药名或 DDInter ID，最多 20 项）。"""
+    """POST /api/check 请求体：药单（药名或 DDInter ID，最多 20 项）。
+
+    diseases 为可选的「患者基础疾病」英文规范名列表（见 GET /api/drugs/diseases），
+    提供后才会执行药物-疾病禁忌（DDSI）检查。
+    """
     medications: list[str] = Field(default_factory=list, max_length=20)
+    diseases: list[str] = Field(default_factory=list, max_length=20)
 
 
 class CheckPair(BaseModel):
@@ -53,6 +58,15 @@ class CheckResponse(BaseModel):
     checked_at: str
     data_version: str
     coverage_note: str
+
+    # ---- 其他相互作用（DDInter 网页接口数据）----
+    diseases_checked: list[str] = Field(default_factory=list)
+    disease_risks: list[dict] = Field(default_factory=list)
+    food_risks: list[dict] = Field(default_factory=list)
+    duplications: list[dict] = Field(default_factory=list)
+    other_summary: dict = Field(default_factory=dict)
+    other_note: str = ""
+    overall_all: str = "gray"
 
 
 # ---------- 图谱 ----------

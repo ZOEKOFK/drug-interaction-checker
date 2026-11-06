@@ -54,7 +54,7 @@ export function searchDrugs(q, limit = 10) {
 }
 
 /* ---------------- 两两 DDI 检查（核心 checker） ---------------- */
-export function check(medIds) {
+export function check(medIds, diseases = []) {
   const ids = [...new Set(medIds)].filter((id) => drugById.has(id))
   const pairs = []
   const unrecorded = []
@@ -113,8 +113,33 @@ export function check(medIds) {
     coverage_note:
       unrecorded.length > 0
         ? `以下 ${unrecorded.length} 个药物组合在数据库中无收录记录，不代表无相互作用。`
-        : '当前药单所有组合均有收录记录。'
+        : '当前药单所有组合均有收录记录。',
+    // 离线子集不含 DDSI / DFI / 重复用药数据，字段留空但结构保持一致
+    diseases_checked: diseases,
+    disease_risks: [],
+    food_risks: [],
+    duplications: [],
+    other_summary: {
+      disease: { Major: 0, Moderate: 0, Minor: 0 },
+      food: { Major: 0, Moderate: 0, Minor: 0 },
+      duplication_groups: 0,
+      overall: 'gray'
+    },
+    other_note: '离线演示模式不包含疾病禁忌 / 食物相互作用 / 重复用药数据（需后端支持）。',
+    overall_all: summary.overall
   }
+}
+
+/** 离线模式下的基础疾病候选（仅用于界面演示，等级与条目数为占位） */
+export function getDiseases() {
+  return [
+    { name_en: 'Kidney Diseases', name_cn: '肾脏疾病', count: 0, major: 0 },
+    { name_en: 'Liver Diseases', name_cn: '肝脏疾病', count: 0, major: 0 },
+    { name_en: 'Diabetes Mellitus', name_cn: '糖尿病', count: 0, major: 0 },
+    { name_en: 'Heart Failure', name_cn: '心力衰竭', count: 0, major: 0 },
+    { name_en: 'Hemorrhage', name_cn: '出血', count: 0, major: 0 },
+    { name_en: 'Hypertension', name_cn: '高血压', count: 0, major: 0 }
+  ]
 }
 
 /* ---------------- 图谱子图构建 ---------------- */

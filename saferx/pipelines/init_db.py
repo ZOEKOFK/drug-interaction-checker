@@ -23,6 +23,9 @@ DDL = """
 DROP TABLE IF EXISTS meta;
 DROP TABLE IF EXISTS template;
 DROP TABLE IF EXISTS alias;
+DROP TABLE IF EXISTS dupli;
+DROP TABLE IF EXISTS dfi;
+DROP TABLE IF EXISTS ddsi;
 DROP TABLE IF EXISTS ddi;
 DROP TABLE IF EXISTS mechanism;
 DROP TABLE IF EXISTS drug;
@@ -76,6 +79,55 @@ CREATE TABLE meta (
   key   TEXT PRIMARY KEY,
   value TEXT
 );
+
+-- ============ 其他相互作用（DDInter 网页接口，官方无 CSV） ============
+
+-- 药物-疾病禁忌（DDSI）
+CREATE TABLE ddsi (
+  id             INTEGER PRIMARY KEY,
+  ddinter_id     TEXT NOT NULL REFERENCES drug(ddinter_id),
+  disease_en     TEXT NOT NULL,
+  disease_cn     TEXT,
+  level          TEXT NOT NULL CHECK (level IN ('Major','Moderate','Minor')),
+  description_en TEXT,
+  reference_text TEXT
+);
+-- 检查时按「药 × 病」双条件查。复合索引让点查落在 0.1ms 量级；
+-- 单列 disease_en 索引反而害事：SQLite 在 IN 列表变长时会切去「疾病优先」计划，
+-- 扫到 600+ 条带长文本的行，10 药场景从 0.09ms 劣化到 6.7ms。故不建。
+CREATE INDEX idx_ddsi_drug_disease ON ddsi(ddinter_id, disease_en);
+-- 疾病选择器要按疾病聚合计数，覆盖索引避免回表读大文本（17.4ms → 1.3ms）
+CREATE INDEX idx_ddsi_cover ON ddsi(disease_en, disease_cn, level);
+
+-- 药物-食物相互作用（DFI）。源接口把 mechanism 字段误命名为 magnesium，清洗时已按语义归位
+CREATE TABLE dfi (
+  id             INTEGER PRIMARY KEY,
+  ddinter_id     TEXT NOT NULL REFERENCES drug(ddinter_id),
+  food_en        TEXT NOT NULL,
+  food_cn        TEXT,
+  level          TEXT NOT NULL CHECK (level IN ('Major','Moderate','Minor')),
+  interaction_en TEXT,
+  management_en  TEXT,
+  mechanism_en   TEXT,
+  mechanism_cn   TEXT,
+  reference_text TEXT
+);
+CREATE INDEX idx_dfi_drug ON dfi(ddinter_id);
+CREATE INDEX idx_dfi_food ON dfi(food_en);
+
+-- 重复用药（治疗重复警告）：同类别 ≥2 种即触发
+CREATE TABLE dupli (
+  id                INTEGER PRIMARY KEY,
+  category_en       TEXT NOT NULL,
+  category_cn       TEXT,
+  ddinter_id        TEXT NOT NULL REFERENCES drug(ddinter_id),
+  combo_trade_name  TEXT,
+  combo_ingredients TEXT,
+  warning_en        TEXT,
+  note_en           TEXT
+);
+CREATE INDEX idx_dupli_drug ON dupli(ddinter_id);
+CREATE INDEX idx_dupli_cat ON dupli(category_en);
 """
 
 
@@ -111,6 +163,7 @@ def main() -> int:
         ],
     )
     name2id = {d["name_en"]: d["ddinter_id"] for d in drugs}
+    drug_ids = {d["ddinter_id"] for d in drugs}
 
     # ---- 机制表 + DDI 表 ----
     mech_index = {}  # (id_a, id_b) -> mechanism_id
@@ -156,6 +209,30 @@ def main() -> int:
             (t["id"], t["name"], t["desc"], t["expected"], json.dumps(ids, ensure_ascii=False)),
         )
 
+    # ---- 其他相互作用（DDSI / DFI / 重复用药）----
+    other_counts = {}
+    other_files = {
+        "ddsi": ("ddsi.csv", ["ddinter_id", "disease_en", "disease_cn", "level", "description_en", "reference_text"]),
+        "dfi": ("dfi.csv", ["ddinter_id", "food_en", "food_cn", "level", "interaction_en", "management_en",
+                            "mechanism_en", "mechanism_cn", "reference_text"]),
+        "dupli": ("dupli.csv", ["category_en", "category_cn", "ddinter_id", "combo_trade_name",
+                                "combo_ingredients", "warning_en", "note_en"]),
+    }
+    for table, (fname, cols) in other_files.items():
+        path = PROC_DIR / fname
+        if not path.exists():
+            print(f"  [warn] 缺少 {fname}，{table} 表留空（运行 clean_other_interactions.py 生成）")
+            other_counts[table] = 0
+            continue
+        with path.open(encoding="utf-8", newline="") as fh:
+            rows = list(csv.DictReader(fh))
+        rows = [r for r in rows if r["ddinter_id"] in drug_ids]
+        conn.executemany(
+            f"INSERT INTO {table} ({', '.join(cols)}) VALUES ({', '.join('?' * len(cols))})",
+            [tuple(r[c] for c in cols) for r in rows],
+        )
+        other_counts[table] = len(rows)
+
     # ---- meta ----
     conn.executemany(
         "INSERT INTO meta (key, value) VALUES (?,?)",
@@ -166,6 +243,9 @@ def main() -> int:
             ("ddi_pairs", str(len(ddi_rows))),
             ("mechanisms", str(len(mech_curated))),
             ("aliases", str(conn.execute("SELECT COUNT(*) FROM alias").fetchone()[0])),
+            ("ddsi_rows", str(other_counts.get("ddsi", 0))),
+            ("dfi_rows", str(other_counts.get("dfi", 0))),
+            ("dupli_rows", str(other_counts.get("dupli", 0))),
         ],
     )
     conn.commit()
@@ -179,6 +259,9 @@ def main() -> int:
     print(f"mechanism 表    : {len(mech_curated)} 条人工审编（成功挂接 {matched_mech} 条 DDI）")
     print(f"alias 表        : {conn.execute('SELECT COUNT(*) FROM alias').fetchone()[0]} 行")
     print(f"template 表     : {len(tpl_curated)} 个模板")
+    print(f"ddsi 表         : {other_counts.get('ddsi', 0)} 行（药物-疾病禁忌）")
+    print(f"dfi 表          : {other_counts.get('dfi', 0)} 行（药物-食物）")
+    print(f"dupli 表        : {other_counts.get('dupli', 0)} 行（重复用药）")
     conn.close()
     return 0
 

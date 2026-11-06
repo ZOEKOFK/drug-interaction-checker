@@ -17,13 +17,13 @@ const dataSources = computed(() => [
     name: 'DDInter 2.0',
     scale: `官方 ${fmt(OFFICIAL_DRUGS)} 种药物 / ${fmt(302516)} 条 DDI；本项目实际入库 ${fmt(stats.value?.drugs)} 种药物 / ${fmt(stats.value?.ddi_pairs)} 个唯一药对`,
     license: 'CC BY-NC-SA 4.0',
-    usage: '核心检查数据库 —— 当前只接入 DDI 关系；DFI（药物-食物）、DDSI（药物-疾病）、重复用药为规划项，尚未实现'
+    usage: `核心检查数据库 —— DDI 关系来自官方 CSV；DDSI / DFI / 重复用药官方未提供 CSV，经网页表格接口抓取，已入库 ${fmt(stats.value?.ddsi_rows)} / ${fmt(stats.value?.dfi_rows)} / ${fmt(stats.value?.dupli_rows)} 条`
   },
   {
     name: 'DDIExtraction 2013 Corpus',
-    scale: '约 784 篇 DrugBank 说明书标注文档',
-    license: '公开（学术用途）',
-    usage: 'NLP 关系抽取评测（规划中，当前为词典+模式规则基线）'
+    scale: '784 篇 DrugBank 说明书 + 175 篇 MEDLINE 摘要（Train 4,021 / Test 979 条关系）',
+    license: 'CC BY-NC 4.0',
+    usage: 'NLP 关系抽取评测 —— 已完成规则基线与 TF-IDF+LR 两档（见 docs/eval_nlp.md）；BioBERT 微调因无 GPU 未执行'
   },
   {
     name: 'DDIMDL',
@@ -40,7 +40,10 @@ const coverage = computed(() => {
     { k: '药物覆盖', v: `${fmt(s.drugs)} / ${fmt(OFFICIAL_DRUGS)}`, note: `官方库的 ${pct(s.drugs, OFFICIAL_DRUGS)}` },
     { k: '中文通用名覆盖', v: `${fmt(s.drugs_with_cn)} / ${fmt(s.drugs)}`, note: `可中文检索的药物占 ${pct(s.drugs_with_cn, s.drugs)}，其余需用英文名` },
     { k: '机制文本覆盖', v: `${fmt(s.mechanisms_covered_pairs)} / ${fmt(s.ddi_pairs)} 对`, note: '仅人工审编的经典案例有中文机制，其余显示「暂无」' },
-    { k: '分级未知记录', v: `${fmt(s.levels?.Unknown)} 对`, note: `占全部药对 ${pct(s.levels?.Unknown, s.ddi_pairs)}，界面标注为「分级未知」而非「无风险」` }
+    { k: '分级未知记录', v: `${fmt(s.levels?.Unknown)} 对`, note: `占全部药对 ${pct(s.levels?.Unknown, s.ddi_pairs)}，界面标注为「分级未知」而非「无风险」` },
+    { k: '药物-疾病禁忌', v: `${fmt(s.ddsi_rows)} 条`, note: `覆盖 ${fmt(s.ddsi_diseases)} 种疾病，其中 ${fmt(s.ddsi_cn_covered)} 条已配中文疾病名` },
+    { k: '药物-食物', v: `${fmt(s.dfi_rows)} 条`, note: `仅 ${fmt(s.dfi_foods)} 类食物（酒精、西柚汁等），覆盖范围窄，非全面食物禁忌` },
+    { k: '治疗重复', v: `${fmt(s.dupli_rows)} 条`, note: `覆盖 ${fmt(s.dupli_categories)} 个治疗类别，同类别 ≥2 种即告警` }
   ]
 })
 
@@ -54,8 +57,8 @@ const references = [
 const stack = [
   { name: '前端', detail: 'Vue 3 · Vite · Tailwind CSS · Pinia · ECharts' },
   { name: '后端', detail: 'FastAPI · SQLite（无序对规范化 + 复合唯一索引）' },
-  { name: '数据管道', detail: 'DDInter 2.0 CSV 清洗入库 · 中英别名映射表（366 种中文名 + 拼音首字母）' },
-  { name: '模型层', detail: '当前为词典 + 模式规则基线；PaddleNLP UIE / BioBERT 微调与事件预测为规划项' }
+  { name: '数据管道', detail: 'DDInter 2.0 CSV 清洗入库 · 网页表格接口抓取 DDSI/DFI/重复用药 · 中英别名映射（366 种中文名 + 拼音）' },
+  { name: '模型层', detail: '当前为词典 + 规则基线（已在 DDIExtraction 2013 上评测）；BioBERT 微调受本机无 GPU 限制' }
 ]
 </script>
 
@@ -135,6 +138,8 @@ const stack = [
         <li>DDInter 官方库含 2,310 种药物，本项目清洗后实际入库 1,971 种（差异来自跨分类重复与无效记录过滤）。</li>
         <li>英文名未收录的药（如部分国产仿制药商品名）无法检索——这是审编库的覆盖边界，不是「无风险」。</li>
         <li>拼音首字母存在 5 组天然冲突（如 klms 同时对应克拉霉素与克林霉素），冲突项不做映射，请改用中文全名。</li>
+        <li>药物-食物数据仅 805 条 / 29 类食物（酒精占一半以上），只覆盖「酒精、西柚汁、高脂、高钾、维生素 K」等常见项，不能据此认为其他食物安全。</li>
+        <li>药物-疾病禁忌的疾病中文名覆盖 150 / 459 种（按条目计约 89%），未覆盖者显示英文病名。</li>
         <li>查不到记录 ≠ 安全：界面与导出报告均固定展示该提示。</li>
       </ul>
     </section>

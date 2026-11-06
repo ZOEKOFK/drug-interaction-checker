@@ -25,6 +25,28 @@
 | ③ 别名 | `build_alias_table.py` | `drugs.csv` + `external/alias_curated.json` → `alias.csv` | 英文名自动全量 + 中文/拼音/同义词人工审编 |
 | ④ 建库 | `init_db.py` | processed CSV + `external/*.json` → `saferx.sqlite` | 建表建索引、灌数据、写 `meta` 版本信息 |
 
+### 2.1 其他相互作用（DDSI / DFI / 重复用药）的抓取
+
+官方只提供 DDI 的 CSV；其余三类只存在于网页表格里（Django + DataTables serverSide）。
+脚本 `download_other_interactions.py` 的做法：
+
+1. `GET /server/other_interaction/` 建立会话，从页面脚本解析 `csrfmiddlewaretoken`；
+2. 对三个接口分页 `POST`（`start` / `length=500`，实测可用），共 32 个请求：
+
+| 数据 | 接口 | 抓取条数 | 入库条数 | 丢弃原因 |
+|---|---|---|---|---|
+| DDSI | `/server/disease-interaction-source/` | 8,359 | 8,009 | 350 条药物不在 DDI 主库中 |
+| DFI | `/server/food-interaction-source/` | 857 | 805 | 52 条同上 |
+| 重复用药 | `/server/dupli-interaction-source/` | 6,033 | 5,663 | 370 条同上 + 去重 |
+
+3. 原始 JSON 落 `data/raw/other_interactions/*.jsonl` + `_snapshot.json`（记录抓取时间、条数、接口路径）；
+4. `clean_other_interactions.py` 做分级映射（`3/2/1 → Major/Moderate/Minor`）、
+   药物 ID 挂接、中文名补全（`data/external/other_cn.json`）。
+
+**注意**：DFI 接口把「机制」字段误命名为 `magnesium`（官方前端 bug），清洗时已按语义归位到 `mechanism`。
+
+复现：`make other`（约 40 秒，限速 0.6s/请求）。
+
 ## 3. 表结构总览
 
 | 表 | 行数 | 作用 |
@@ -34,7 +56,13 @@
 | `mechanism` | 21 | 人工审编机制 / 处置文本 |
 | `alias` | 5,244 | 别名映射（中文 / 英文 / 拼音 / 同义词） |
 | `template` | 4 | 慢病演示模板药单 |
-| `meta` | 6 | 数据版本与规模元信息 |
+| `ddsi` | 8,009 | 药物-疾病禁忌（DDSI） |
+| `dfi` | 805 | 药物-食物相互作用（DFI） |
+| `dupli` | 5,663 | 治疗重复（同类别 ≥2 种） |
+| `meta` | 9 | 数据版本与规模元信息 |
+
+> DDSI / DFI / 重复用药三类官方**没有 CSV 下载**，来自网页表格接口抓取（见 §2.1），
+> 原始快照保存在 `data/raw/other_interactions/`（不入库），可复现。
 
 ## 4. 字段字典
 
@@ -95,13 +123,55 @@
 | `expected` | TEXT | 预期演示效果（答辩时可对照） |
 | `drugs_json` | TEXT | DDInter ID 数组的 JSON 字符串 |
 
-### 4.6 `meta` 元信息
+### 4.6 `ddsi` 药物-疾病禁忌
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `id` | INTEGER PK | 自增主键 |
+| `ddinter_id` | TEXT FK | 指向 `drug` |
+| `disease_en` | TEXT | 疾病英文规范名（如 `Kidney Diseases`），作为检查输入键 |
+| `disease_cn` | TEXT | 中文病名（150/459 种已译，其余为空由前端回退英文） |
+| `level` | TEXT | `Major` / `Moderate` / `Minor`（源数据 3/2/1） |
+| `description_en` | TEXT | DDInter 原文说明（100% 覆盖，中位 462 字符） |
+| `reference_text` | TEXT | 参考文献（`\|` 分隔，8,328 条有值） |
+
+索引：`idx_ddsi_drug`、`idx_ddsi_disease`。
+
+### 4.7 `dfi` 药物-食物相互作用
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `ddinter_id` | TEXT FK | 指向 `drug` |
+| `food_en` / `food_cn` | TEXT | 食物名（29 类，中文 100% 覆盖） |
+| `level` | TEXT | 同上 |
+| `interaction_en` | TEXT | 相互作用说明（英文原文） |
+| `management_en` | TEXT | 处置建议（英文原文，100% 覆盖） |
+| `mechanism_en` / `mechanism_cn` | TEXT | 机制标签（源字段名误写为 `magnesium`，已归位并译成 吸收/代谢/协同/拮抗/排泄/其他） |
+| `reference_text` | TEXT | 参考文献 |
+
+索引：`idx_dfi_drug`、`idx_dfi_food`。
+
+### 4.8 `dupli` 治疗重复
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `category_en` / `category_cn` | TEXT | 治疗类别（95 类，中文 100% 覆盖，源字段被截断至 32 字符，已按语义补全） |
+| `ddinter_id` | TEXT FK | 指向 `drug`（该类别下的单药） |
+| `combo_trade_name` | TEXT | 相关复方商品名 |
+| `combo_ingredients` | TEXT | 复方成分（如 `Dexchlorpheniramine/dextromethorphan/pseudoephedrine`） |
+| `warning_en` | TEXT | 官方警告原文 |
+| `note_en` | TEXT | 备注（如「获益可能大于风险」） |
+
+索引：`idx_dupli_drug`、`idx_dupli_cat`。判定逻辑：药单中同一 `category_en` 出现 ≥2 种药即告警。
+
+### 4.9 `meta` 元信息
 
 | key | 示例值 |
 |---|---|
 | `source` | `DDInter 2.0 (https://ddinter2.scbdd.com/, CC BY-NC-SA 4.0)` |
 | `built_at` | `2026-11-06 23:55:56` |
 | `drugs` / `ddi_pairs` / `mechanisms` / `aliases` | 规模快照 |
+| `ddsi_rows` / `dfi_rows` / `dupli_rows` | 其他相互作用规模快照 |
 
 ## 5. 清洗规则（可复现）
 
@@ -145,4 +215,15 @@
 | 机制文本 | 21 / 234,981 | 绝大多数药对无中文机制 |
 | 分级未知 | 42,415 对（18.05%） | 独立展示，不并入「安全」 |
 | 未收录药 | DDInter 未收录的国产药（如格列齐特、多潘立酮） | 检索不到，界面提示「查无此药」 |
-| DFI / DDSI / 重复用药 | 未入库 | 官网未开放 CSV 下载，需另选数据源（规划项） |
+| DFI / DDSI / 重复用药 | 已入库 805 / 8,009 / 5,663 条 | 见 §2.1 抓取说明；DFI 仅 29 类食物，覆盖窄 |
+| 疾病中文名 | 150 / 459 种（按条目 89%） | 未覆盖者显示英文病名 |
+
+### 7.1 其他相互作用的已知边界
+
+| 边界 | 现状 | 影响 |
+|---|---|---|
+| DFI 食物种类 | 29 类（酒精 448 条占一半） | 只能提示酒精/西柚汁/高脂/高钾/维生素 K 等常见项 |
+| DDSI 疾病粒度 | 459 种，但颗粒度粗（"Kidney Diseases" 而非具体分期） | 不能替代说明书级禁忌判断 |
+| 重复用药判定 | 依赖 DDInter 的 95 个治疗类别 | 只覆盖其类别体系内的药，跨类别重复查不出 |
+| 中文译文 | 疾病按 Top150 翻译，其余英文 | 界面对未覆盖项显示英文 |
+| 抓取稳定性 | 接口无公开文档，字段名有 bug（DFI 的 mechanism 被写成 `magnesium`） | 官方改版可能失效，脚本会显式报错 |

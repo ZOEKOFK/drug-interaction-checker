@@ -3,7 +3,7 @@ import { ref, watch, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useMedStore, MAX_DRUGS } from '../stores/medications.js'
 import { useResultStore } from '../stores/results.js'
-import { searchDrugs, check as apiCheck, getTemplates } from '../api/client.js'
+import { searchDrugs, check as apiCheck, getTemplates, getDiseases } from '../api/client.js'
 import DrugSearchBox from '../components/DrugSearchBox.vue'
 import PillChip from '../components/PillChip.vue'
 import RiskDonut from '../components/RiskDonut.vue'
@@ -13,19 +13,30 @@ const medStore = useMedStore()
 const resultStore = useResultStore()
 
 const templates = ref([])
+const diseases = ref([])
+const showAllDiseases = ref(false)
 onMounted(async () => {
   templates.value = await getTemplates()
+  diseases.value = await getDiseases(60)
 })
 
-/* 实时风险摘要（增删药品即时刷新） */
+const visibleDiseases = computed(() =>
+  showAllDiseases.value ? diseases.value : diseases.value.slice(0, 12)
+)
+const selectedDiseaseKeys = computed(() => new Set(medStore.diseaseIds))
+function toggleDisease(d) {
+  medStore.toggleDisease(d)
+}
+
+/* 实时风险摘要（增删药品 / 改基础疾病即时刷新） */
 watch(
-  () => medStore.ids,
-  async (ids) => {
+  () => [medStore.ids, medStore.diseaseIds],
+  async ([ids]) => {
     if (ids.length < 2) {
       resultStore.clearPreview()
       return
     }
-    const result = await apiCheck(ids)
+    const result = await apiCheck(ids, medStore.diseaseIds)
     resultStore.setPreview(result)
   },
   { deep: true, immediate: true }
@@ -43,6 +54,31 @@ const OVERALL_META = {
   gray: { label: '未发现已知分级风险', cls: 'bg-primary text-white', icon: 'm5 13 4 4L19 7' }
 }
 const overall = computed(() => OVERALL_META[previewSummary.value.overall] || OVERALL_META.gray)
+
+/* 其他相互作用摘要（疾病禁忌 / 食物 / 重复用药） */
+const previewOther = computed(
+  () =>
+    preview.value?.other_summary ?? {
+      disease: { Major: 0, Moderate: 0, Minor: 0 },
+      food: { Major: 0, Moderate: 0, Minor: 0 },
+      duplication_groups: 0,
+      overall: 'gray'
+    }
+)
+const previewOtherCount = computed(
+  () =>
+    (preview.value?.disease_risks?.length ?? 0) +
+    (preview.value?.food_risks?.length ?? 0) +
+    (preview.value?.duplications?.length ?? 0)
+)
+const diseaseCount = computed(() => {
+  const d = previewOther.value.disease
+  return d.Major + d.Moderate + d.Minor
+})
+const foodCount = computed(() => {
+  const f = previewOther.value.food
+  return f.Major + f.Moderate + f.Minor
+})
 
 /* 药品推荐（常用慢病药，排除已添加） */
 const suggestions = ref([])
@@ -64,7 +100,7 @@ async function loadTemplate(tpl) {
 
 async function startCheck() {
   if (medStore.count < 2) return
-  await resultStore.runCheck(medStore.ids)
+  await resultStore.runCheck(medStore.ids, medStore.diseaseIds)
   router.push('/results')
 }
 </script>
@@ -108,6 +144,56 @@ async function startCheck() {
               清空药单
             </button>
           </div>
+        </div>
+
+        <!-- 基础疾病（启用药物-疾病禁忌检查） -->
+        <div class="card p-5">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <h2 class="font-bold text-sm flex items-center gap-2">
+                基础疾病
+                <span class="badge badge-clear text-[10px] font-semibold">可选</span>
+              </h2>
+              <p class="text-xs text-ink-faint mt-1">选择患者的基础疾病后，将额外执行「药物-疾病禁忌（DDSI）」检查</p>
+            </div>
+            <button
+              v-if="medStore.hasDisease"
+              class="text-xs text-risk-major hover:underline font-semibold shrink-0"
+              @click="medStore.clearDiseases()"
+            >
+              清空
+            </button>
+          </div>
+
+          <div class="mt-3 flex flex-wrap gap-2">
+            <button
+              v-for="d in visibleDiseases"
+              :key="d.name_en"
+              class="px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors"
+              :class="selectedDiseaseKeys.has(d.name_en)
+                ? 'bg-primary text-white border-primary'
+                : 'bg-white text-ink-soft border-line hover:border-primary-bright hover:text-primary'"
+              @click="toggleDisease(d)"
+            >
+              {{ d.name_cn }}
+              <span v-if="d.count" class="ml-1 tabular-nums opacity-60">{{ d.count }}</span>
+            </button>
+          </div>
+
+          <button
+            v-if="diseases.length > 12"
+            class="mt-2.5 text-xs font-semibold text-primary hover:underline"
+            @click="showAllDiseases = !showAllDiseases"
+          >
+            {{ showAllDiseases ? '收起' : `展开更多疾病（共 ${diseases.length} 项）` }}
+          </button>
+
+          <p v-if="!medStore.hasDisease" class="mt-2.5 text-[11px] text-ink-faint">
+            未选择时跳过该项检查——未检查不代表没有禁忌。
+          </p>
+          <p v-else class="mt-2.5 text-[11px] text-primary/80">
+            已选 {{ medStore.diseases.length }} 项：{{ medStore.diseases.map((d) => d.name_cn).join('、') }}
+          </p>
         </div>
 
         <!-- 模板快捷载入 -->
@@ -166,6 +252,23 @@ async function startCheck() {
             <div v-if="previewSummary.Unknown" class="flex items-center justify-between px-1">
               <span class="flex items-center gap-2"><i class="w-2.5 h-2.5 rounded-full bg-ink-faint inline-block" />分级未知 Unknown</span>
               <b class="text-ink-soft">{{ previewSummary.Unknown }}</b>
+            </div>
+          </div>
+
+          <!-- 其他相互作用（疾病禁忌 / 食物 / 重复用药） -->
+          <div v-if="previewOtherCount" class="mt-3 border-t border-line pt-3 space-y-1.5 text-sm">
+            <p class="text-[11px] font-bold text-ink-faint tracking-wide">其他相互作用</p>
+            <div v-if="diseaseCount" class="flex items-center justify-between px-1">
+              <span class="flex items-center gap-2"><i class="w-2.5 h-2.5 rounded-full bg-primary inline-block" />疾病禁忌</span>
+              <b class="tabular-nums" :class="previewOther.disease.Major ? 'text-risk-major' : 'text-ink-soft'">{{ diseaseCount }}</b>
+            </div>
+            <div v-if="foodCount" class="flex items-center justify-between px-1">
+              <span class="flex items-center gap-2"><i class="w-2.5 h-2.5 rounded-full bg-risk-moderate inline-block" />食物/烟酒</span>
+              <b class="tabular-nums" :class="previewOther.food.Major ? 'text-risk-major' : 'text-ink-soft'">{{ foodCount }}</b>
+            </div>
+            <div v-if="previewOther.duplication_groups" class="flex items-center justify-between px-1">
+              <span class="flex items-center gap-2"><i class="w-2.5 h-2.5 rounded-full bg-risk-minor inline-block" />治疗重复</span>
+              <b class="text-ink-soft tabular-nums">{{ previewOther.duplication_groups }}</b>
             </div>
           </div>
 

@@ -16,6 +16,21 @@ export const useResultStore = defineStore('results', {
     summary: (s) => s.report?.summary ?? { Major: 0, Moderate: 0, Minor: 0, Unknown: 0, overall: 'gray' },
     pairs: (s) => s.report?.pairs ?? [],
     unrecorded: (s) => s.report?.unrecorded_pairs ?? [],
+    /** 其他相互作用三段（疾病 / 食物 / 重复用药） */
+    diseaseRisks: (s) => s.report?.disease_risks ?? [],
+    foodRisks: (s) => s.report?.food_risks ?? [],
+    duplications: (s) => s.report?.duplications ?? [],
+    otherSummary: (s) =>
+      s.report?.other_summary ?? {
+        disease: { Major: 0, Moderate: 0, Minor: 0 },
+        food: { Major: 0, Moderate: 0, Minor: 0 },
+        duplication_groups: 0,
+        overall: 'gray'
+      },
+    otherCount: (s) =>
+      (s.report?.disease_risks?.length ?? 0) +
+      (s.report?.food_risks?.length ?? 0) +
+      (s.report?.duplications?.length ?? 0),
     filteredPairs(s) {
       if (s.filter === 'all') return s.pairs
       if (s.filter === 'unrecorded') return []
@@ -30,10 +45,10 @@ export const useResultStore = defineStore('results', {
     clearPreview() {
       this.preview = null
     },
-    async runCheck(medIds) {
+    async runCheck(medIds, diseases = []) {
       this.checking = true
       try {
-        this.report = await apiCheck(medIds)
+        this.report = await apiCheck(medIds, diseases)
         this.preview = this.report
         return this.report
       } finally {

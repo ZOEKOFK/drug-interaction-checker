@@ -32,14 +32,14 @@ export async function searchDrugs(q, limit = 10) {
   return mock.searchDrugs(q, limit)
 }
 
-/** 两两 DDI 检查（核心接口） */
-export async function check(medIds) {
+/** 两两 DDI 检查（核心接口）。diseases 为可选的基础疾病英文规范名 */
+export async function check(medIds, diseases = []) {
   if (backendOnline !== false) {
     try {
       const data = await jfetch('/api/check', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ medications: medIds })
+        body: JSON.stringify({ medications: medIds, diseases })
       })
       backendOnline = true
       return data
@@ -47,7 +47,21 @@ export async function check(medIds) {
       backendOnline = false
     }
   }
-  return mock.check(medIds)
+  return mock.check(medIds, diseases)
+}
+
+/** 基础疾病候选（DDSI 检查的输入） */
+export async function getDiseases(limit = 60) {
+  if (backendOnline !== false) {
+    try {
+      const data = await jfetch(`/api/drugs/diseases?limit=${limit}`)
+      backendOnline = true
+      return data
+    } catch {
+      backendOnline = false
+    }
+  }
+  return mock.getDiseases()
 }
 
 /** 当前药单的关系子图 -> {nodes, links}（ECharts 直接可用） */

@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, Query
 
 from ...core.db import get_conn
 from ...services.alias import drug_brief, search_drugs
+from ...services.other_interactions import list_diseases
 
 router = APIRouter(prefix="/api/drugs", tags=["drugs"])
 
@@ -14,6 +15,12 @@ def search(q: str = "", limit: int = Query(10, ge=1, le=50), conn=Depends(get_co
     """药名模糊搜索（中文通用名 / 英文 / 拼音首字母）。空 q 返回常用慢病药物。"""
     rows = search_drugs(conn, q, limit)
     return [drug_brief(r) for r in rows]
+
+
+@router.get("/diseases")
+def diseases(limit: int = Query(80, ge=10, le=200), conn=Depends(get_conn)):
+    """基础疾病选择器数据（按收录禁忌条目数排序）。"""
+    return list_diseases(conn, limit)
 
 
 @router.get("/templates")
