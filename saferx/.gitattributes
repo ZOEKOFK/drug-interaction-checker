@@ -1,0 +1,15 @@
+# 行尾策略：源码保持 LF，避免 Windows 上 checkout 后被转成 CRLF
+# （deploy/site/start.sh 曾因 CRLF 导致 Linux 的 sh 报 "set: Illegal option -"）
+* text=auto eol=lf
+
+# 二进制资源不参与行尾转换
+*.png binary
+*.jpg binary
+*.sqlite binary
+*.safetensors binary
+*.bin binary
+
+# 需要可执行的脚本
+*.sh text eol=lf
+Dockerfile text eol=lf
+*.bat text eol=crlf

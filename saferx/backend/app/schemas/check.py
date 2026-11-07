@@ -1,7 +1,7 @@
 """Pydantic 请求/响应模型。"""
 from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 # ---------- 药物 ----------
@@ -99,3 +99,13 @@ class GraphResponse(BaseModel):
 
 class ExtractRequest(BaseModel):
     text: str = Field(min_length=1, max_length=8000)
+    # None = 跟随服务端 SAFERX_ML 开关；显式 True 可在模型就绪时强制走 BioBERT
+    use_model: bool | None = None
+
+    @field_validator("text")
+    @classmethod
+    def _not_blank(cls, v: str) -> str:
+        """纯空白也要拒：否则会白跑一次全表扫描，且返回空结果让用户困惑。"""
+        if not v.strip():
+            raise ValueError("text 不能为空")
+        return v

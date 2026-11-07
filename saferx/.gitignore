@@ -1,0 +1,32 @@
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+
+# ---------- 前端 ----------
+node_modules/
+frontend/dist/
+.vite/
+
+# ---------- 数据（体积大，可由管道重建） ----------
+data/raw/
+data/processed/
+data/saferx.sqlite
+# data/external/ 下的人工审编 JSON 要提交，见 .gitignore 例外规则
+
+# ---------- 模型（424MB 预训练权重 / 411MB 微调产物，可重新训练） ----------
+ml/models/
+ml/artifacts/
+ml/train.log
+
+# ---------- 发布包（由 deploy/prepare_site.py 生成，内含数据库与 dist） ----------
+deploy/site/
+
+# ---------- 本地环境 ----------
+.env
+.tmp_*
+*.log
+.DS_Store

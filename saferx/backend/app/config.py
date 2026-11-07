@@ -6,7 +6,17 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parents[2]
 
 DB_PATH = Path(os.getenv("SAFERX_DB", BASE_DIR / "data" / "saferx.sqlite"))
-FRONTEND_DIST = BASE_DIR / "frontend" / "dist"
+
+
+def _find_web_root() -> Path:
+    """前端产物位置：开发/生产用 frontend/dist；发布包（deploy/site）用 web/。"""
+    for cand in (BASE_DIR / "frontend" / "dist", BASE_DIR / "web"):
+        if (cand / "index.html").exists():
+            return cand
+    return BASE_DIR / "frontend" / "dist"
+
+
+FRONTEND_DIST = Path(os.getenv("SAFERX_WEB", _find_web_root()))
 
 DEBUG = os.getenv("SAFERX_DEBUG", "0") in ("1", "true", "yes")
 

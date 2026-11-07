@@ -249,7 +249,7 @@ export function extractTriples(text) {
       })
     }
   }
-  return { entities, triples }
+  return { engine: 'dict', entities: entities.map((e) => ({ ...e, source: 'dict' })), unknown_entities: [], triples, offline: true }
 }
 
 /** 离线演示子集的规模信息（与 /api/health 的 stats 结构保持一致） */

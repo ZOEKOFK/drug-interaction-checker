@@ -5,14 +5,16 @@ services:
     build:
       context: ..
       dockerfile: deploy/Dockerfile
+    image: saferx:latest
     ports:
       - "8000:8000"
     environment:
       - SAFERX_DB=/app/data/saferx.sqlite
     volumes:
-      # 数据库与原始数据持久化（容器重建无需重新下载）
-      - saferx-data:/app/data
+      # 只持久化「原始 CSV 缓存」。不要挂 /app/data —— 命名卷首次挂载是空目录，
+      # 会把镜像自带的 saferx.sqlite 遮蔽掉，容器于是又要联网重下 500MB CSV。
+      - saferx-raw:/app/data/raw
     restart: unless-stopped
 
 volumes:
-  saferx-data:
+  saferx-raw:

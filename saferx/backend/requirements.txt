@@ -1,0 +1,5 @@
+fastapi>=0.110
+uvicorn[standard]>=0.29
+pydantic>=2.6
+# 数据管道 build_alias_table.py 需要（拼音首字母别名）；容器内重建数据库时用到
+pypinyin>=0.50

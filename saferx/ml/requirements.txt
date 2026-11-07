@@ -1,0 +1,11 @@
+# 模型层依赖（可选）。
+#
+# 后端运行时**不需要**这些包：extractor.py 在缺少 torch/transformers 时会静默降级到词典基线。
+# 只有要训练/推理 BioBERT 时才安装：
+#     python -m pip install -r ml/requirements.txt
+#
+# CPU 版 torch 体积远小于 CUDA 版，教学场景足够（3 epoch / 7231 句 / 约 73 分钟）。
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch>=2.5
+transformers>=4.40
+seqeval>=1.2

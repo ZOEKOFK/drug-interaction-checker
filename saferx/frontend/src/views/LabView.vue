@@ -25,7 +25,7 @@ async function runExtract() {
   }
 }
 
-/** 高亮分词渲染 */
+/** 高亮分词渲染：库内药物实心高亮，模型识别出但库内无对应的药名用虚线下划线 */
 const segments = computed(() => {
   if (!extracted.value) return []
   const { entities } = extracted.value
@@ -33,12 +33,20 @@ const segments = computed(() => {
   let cursor = 0
   for (const e of entities) {
     if (e.start > cursor) segs.push({ text: text.value.slice(cursor, e.start) })
-    segs.push({ text: e.text, drug: e.drug, start: e.start })
+    segs.push({ text: e.text, drug: e.drug, source: e.source, start: e.start })
     cursor = e.end
   }
   if (cursor < text.value.length) segs.push({ text: text.value.slice(cursor) })
   return segs
 })
+
+// 引擎标签：后端会在 engine 里说明这一轮用的是词典还是 BioBERT
+const ENGINE_META = {
+  biobert: { label: 'BioBERT 序列标注', cls: 'badge-major', tip: '实体 F1 0.877（DDIExtraction 2013）' },
+  dict: { label: '词典基线', cls: 'badge-moderate', tip: '实体 F1 0.656，词表外商品名会漏' }
+}
+const engineMeta = computed(() => ENGINE_META[extracted.value?.engine] || ENGINE_META.dict)
+const unknownNames = computed(() => (extracted.value?.unknown_entities || []).map((u) => u.text))
 
 const STATUS_META = {
   known: { label: '主库已收录', cls: 'badge-minor' },
@@ -55,7 +63,9 @@ const STATUS_META = {
           粘贴药品说明书或文献段落，模型自动识别药物实体并抽取相互作用三元组，与主库比对给出「已收录 / 新增候选」
         </p>
       </div>
-      <span class="badge badge-moderate badge-dot">离线演示模式（规则匹配）· 后端接入 UIE / BioBERT 后自动升级</span>
+      <span class="badge badge-dot" :class="engineMeta.cls" :title="engineMeta.tip">
+        识别引擎：{{ engineMeta.label }}
+      </span>
     </div>
 
     <div class="mt-6 grid lg:grid-cols-2 gap-5 items-start">
@@ -103,11 +113,19 @@ const STATUS_META = {
               <mark
                 v-if="seg.drug"
                 class="bg-primary-100 text-primary-dark rounded px-1 py-0.5 font-semibold"
-                :title="`${seg.drug.name_en} · ${seg.drug.category}`"
+                :title="`${seg.drug.name_en} · ${seg.drug.category || '未分类'}｜来源：${seg.source === 'model' ? 'BioBERT' : '词典'}`"
               >{{ seg.text }}</mark>
+              <span
+                v-else-if="seg.source === 'model'"
+                class="border-b-2 border-dashed border-line text-ink-soft cursor-help"
+                title="模型识别为药物实体，但主库无对应药名——属待评审的库外药名"
+              >{{ seg.text }}</span>
               <template v-else>{{ seg.text }}</template>
             </template>
           </div>
+          <p v-if="unknownNames.length" class="mt-2 text-xs text-ink-faint">
+            库外药名 {{ unknownNames.length }} 个：{{ unknownNames.join('、') }} —— 不计入三元组，建议人工核实后评审入库
+          </p>
         </div>
       </div>
 

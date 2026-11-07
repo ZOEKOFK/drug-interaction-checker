@@ -254,7 +254,7 @@ curl -s "http://127.0.0.1:8000/api/graph?ids=华法林,胺碘酮,地高辛"
 与 `/api/check` 同构（供报告页/导出使用），另支持 `GET /api/report?ids=a,b,c`。
 导出的 HTML 报告由前端 `CheckResultView` 在浏览器内生成（匿名、可打印），服务端不留存。
 
-## 7. `POST /api/lab/extract` — 文献 DDI 抽取（演示）
+## 7. `POST /api/lab/extract` — 文献 DDI 抽取
 
 ```bash
 curl -s -X POST http://127.0.0.1:8000/api/lab/extract \
@@ -264,16 +264,37 @@ curl -s -X POST http://127.0.0.1:8000/api/lab/extract \
 
 ```json
 {
-  "entities": [{ "text": "华法林", "drug": { "name_cn": "华法林", "name_en": "Warfarin" }, "start": 5, "end": 8 }],
+  "engine": "dict",
+  "entities": [
+    { "text": "华法林", "start": 5, "end": 8, "source": "dict",
+      "drug": { "name_cn": "华法林", "name_en": "Warfarin" } },
+    { "text": "胺碘酮", "start": 17, "end": 20, "source": "dict",
+      "drug": { "name_cn": "胺碘酮", "name_en": "Amiodarone" } }
+  ],
+  "unknown_entities": [],
   "triples": [{ "drug_a": {}, "drug_b": {}, "status": "known", "level": "Major", "confidence": 0.92 }]
 }
 ```
 
-`status`：`known`（主库已收录，附分级）/ `new`（主库无记录，作为候选取样，需人工核实后评审入库）。
+| 字段 | 说明 |
+|---|---|
+| `engine` | `dict`（词典基线）或 `biobert`（序列标注），前端据此显示当前识别引擎 |
+| `entities[].source` | `dict` / `model`，标明该实体由哪一档识别出来 |
+| `entities[].drug` | 归一化到库内的药物；**可能为 `null`**（模型识别出库外商品名） |
+| `unknown_entities[]` | 模型识别为药物但库内无对应药名的实体，不计入三元组，作人工评审候选 |
+| `triples[].status` | `known`（主库已收录，附分级）/ `new`（主库无记录，需人工核实后评审入库） |
 
-**当前实现为词典共现规则基线**，已在 DDIExtraction 2013 语料上评测（实体 F1 0.656、
-关系 micro-F1 0.602；同语料上 TF-IDF+LR 可达 0.862，详见 `docs/eval_nlp.md`）。
-BioBERT 微调受本机无 GPU 限制未执行，接口结构不变，替换推理层无需改调用方。
+**两档实现，请求可用 `use_model` 切换**（`null` = 跟随服务端 `SAFERX_ML` 开关）：
+
+| 引擎 | 触发条件 | 实体 F1 | 单次耗时 |
+|---|---|---|---|
+| 词典基线 | 默认 | 0.656 | ~20 ms |
+| BioBERT | `SAFERX_ML=1` 且 `ml/artifacts/biobert-ner` 存在，或请求 `use_model: true` | **0.877** | 首次加载 ~15 s，之后 ~0.2 s |
+
+两档产物结构完全一致，上层前端无需改动。模型不可用时**静默降级**到词典基线，不会 500。
+模型权重 411MB，不进容器镜像、不进发布包，需单独 `python ml/train_ner.py --epochs 3` 生成。
+
+`text` 为纯空白时返回 422（`field_validator` 拦截），避免白跑一次全表扫描。
 
 ## 8. 错误与边界
 

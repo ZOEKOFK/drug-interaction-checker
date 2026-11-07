@@ -1,11 +1,13 @@
 node_modules
 frontend/node_modules
 frontend/dist
+# 原始 CSV 与中间产物不进镜像（可由 make data / make other 重建）
 data/raw
 data/interim
 data/processed
-data/*.sqlite
-ml
+# 训练用的预训练权重太大（440MB），推理只需要 ml/artifacts
+ml/models
+ml/artifacts
 docs
 __pycache__
 *.pyc
