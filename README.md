@@ -16,7 +16,12 @@
 
 </div>
 
-> **项目状态**：`v0.1 · W0 仓库初始化`。当前仓库包含项目方案与许可证，代码骨架、数据管道、前后端将按 [路线图](#路线图) 分阶段入库。本文档随实现同步更新。
+> **项目状态**：`v1.0 · 已上线`。数据管道、前后端、NLP 评测、容器与公网部署全部完成。
+> 在线体验：**https://saferx-drug-checker.app.workbuddy.host/?sharecode=T25TJVI4R5**
+> （首次访问需带 sharecode；公开分享前需在「设置—数据管理—应用」中调整可见性）
+>
+> 当前规模：1,971 种药物 / 234,981 个 DDI 药对 / DDSI 8,009 + DFI 805 + 重复用药 5,663 条；
+> 51 个后端用例通过；检索准确性 100 条药单 A/B：查准 100% / 查全 99.64%；BioBERT 实体 F1 0.877。
 
 ---
 
@@ -400,19 +405,22 @@ DDIMDL 基准：572 药、65 种事件类型的多标签预测。方法为 RDKit
 
 ## 测试与评估
 
-| 维度 | 方法 |
-|---|---|
-| **单元测试** | `checker.py` 用 7 个经典案例 + 3 个安全对照断言风险等级；`alias.py` 断言大小写、别名、拼音首字母、未命中候选四条路径 |
-| **接口测试** | FastAPI TestClient 覆盖正常流、未命中药名、空药单、n=1、n>20 边界 |
-| **前端关键路径** | 载入模板 → 检查 → 展开卡片 → 导出报告，清单写入 `docs/demo_script.md` |
-| **性能** | n=20 药单（190 组合）响应时间记录归档 |
-| **数据画像** | 风险等级分布、ATC 分类分布、药品种类覆盖统计 |
-| **检索准确性** | 100 条测试药单与 DDInter 官方在线工具人工比对，报告查全率 / 查准率 |
-| **NLP 评测** | DDIExtraction 2013 测试集 P/R/F1（BioBERT 微调 vs UIE 零样本 vs 规则基线） |
+| 维度 | 方法 | 实测结果 |
+|---|---|---|
+| **单元测试** | 7 个经典案例 + 安全对照断言风险等级；别名四条归一化路径 | 51 用例通过 |
+| **接口测试** | TestClient 覆盖正常流、未命中药名、空药单、n=1、n>20、疾病数上下界 | 见 `backend/tests/` |
+| **抽取器测试** | 中文整句、英文小写、同义词别名、词边界、空白输入 | 8 用例，含 3 个曾暴露的真 bug |
+| **检索准确性** | 100 条药单与 DDInter 官方检查器自动 A/B | 查准 100% / 查全 99.64% / 分级一致 824/824 |
+| **NLP 评测** | DDIExtraction 2013 实体与关系 | 词典 F1 0.656 → BioBERT **0.877**；关系规则 0.602 / TF-IDF+LR 0.862 |
+| **预测实验** | DDI 链接预测（替代 DDIMDL） | 补全 AUC 0.955 / 冷启动 0.747 |
+| **性能** | n=20 药单（190 组合）四类检查 | 业务逻辑 9.43 ms，HTTP 端到端 76.8 ms |
+| **数据画像** | 分级分布、中文覆盖、高连接度药物 | `docs/data_profile.md` |
 
 ```bash
 make test                      # 全量测试
-pytest backend/tests -k checker -v
+python pipelines/eval_accuracy.py --n 100   # 检索准确性
+python pipelines/eval_link_pred.py --n 20000  # 链接预测
+python ml/train_ner.py --epochs 3             # BioBERT 微调（CPU 约 73 分钟）
 ```
 
 ---
@@ -422,13 +430,15 @@ pytest backend/tests -k checker -v
 | 阶段 | 目标 | 验收标志 | 状态 |
 |---|---|---|---|
 | **W0** | 仓库初始化、README、许可与目录约定 | 仓库可克隆、方案可读 | ✅ 完成 |
-| **W1** | 数据管道：下载 → 清洗入库 → 别名表 v1 → FastAPI | `/api/check` 返回真实数据 | ✅ 完成（1971 药 / 234,981 对入库，31 测试通过） |
+| **W1** | 数据管道：下载 → 清洗入库 → 别名表 v1 → FastAPI | `/api/check` 返回真实数据 | ✅ 完成（1971 药 / 234,981 对入库） |
 | **W2** | 前端骨架 + 药单页 + 检查结果页 | 3 组演示药单全流程可跑 | ✅ 完成（六页全成型，前后端联调打通） |
-| **W3** | 图谱页 + DDSI/DFI/重复用药 + 报告导出 | 五个页面全部成型 | 🟡 图谱页 / 报告导出已完成；**DDSI / DFI / 重复用药未实现**（官方仅开放 DDI 的 CSV 下载，需另选数据源） |
-| **W4** | NLP 模块（UIE 优先）+ 预测实验（选做） | 实验室页可演示 | 🟡 词典+模式规则基线可演示；**UIE/BioBERT 微调与事件预测未开始**（`ml/` 待建立） |
-| **W5** | 测试 + 视觉打磨 + 部署 + 文档 | 交付物齐全 | 🟡 31 用例、单服务部署、[docs/](saferx/docs/) 五份文档与兜底截图已完成；**课程报告正文与正式上线未完成** |
+| **W3** | 图谱页 + DDSI/DFI/重复用药 + 报告导出 | 五个页面全部成型 | ✅ 完成。后三类官方只开放网页表格接口、无 CSV，已逆向 `POST /server/{disease,food,dupli}-interaction-source/` 抓取入库（8,009 / 805 / 5,663 条），接口、UI、用例齐备 |
+| **W4** | NLP 模块（UIE 优先）+ 预测实验（选做） | 实验室页可演示 | ✅ 完成。词典基线 F1 0.656 → **BioBERT 微调 0.877**（CPU 73 分钟）；预测改为链接预测（DDIMDL 需 SMILES/靶点，数据不具备），补全 AUC 0.955 / 冷启动 0.747 |
+| **W5** | 测试 + 视觉打磨 + 部署 + 文档 | 交付物齐全 | ✅ 完成。51 用例、Docker + 单服务双路径部署、[docs/](saferx/docs/) 九份文档与兜底截图、课程报告正文、**公网已上线** |
 
-**交付物索引**：[数据字典](saferx/docs/data_dictionary.md) · [接口文档](saferx/docs/api.md) · [演示脚本](saferx/docs/demo_script.md) · [数据画像](saferx/docs/data_profile.md) · [页面截图](saferx/deploy/screenshots/)
+**在线体验**：https://saferx-drug-checker.app.workbuddy.host/?sharecode=T25TJVI4R5
+
+**交付物索引**：[课程报告](saferx/docs/report.md) · [数据字典](saferx/docs/data_dictionary.md) · [接口文档](saferx/docs/api.md) · [演示脚本](saferx/docs/demo_script.md) · [数据画像](saferx/docs/data_profile.md) · [准确性评测](saferx/docs/eval_accuracy.md) · [NLP 评测](saferx/docs/eval_nlp.md) · [BioBERT](saferx/docs/eval_ner_biobert.md) · [预测实验](saferx/docs/eval_prediction.md) · [页面截图](saferx/deploy/screenshots/)
 
 **分支与提交规范**：`main` 始终可运行；功能开发在 `feature/w1-data-pipeline` 式分支完成。提交信息遵循 Conventional Commits（`feat:` `fix:` `docs:` `data:`），里程碑打 tag（`w1-done` … `w5-submit`）。`data/external/alias.csv` 等入库数据的修改单独提交，message 注明修改依据。
 
