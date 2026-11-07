@@ -119,6 +119,10 @@ def main() -> int:
             f"--user-data-dir={profile}",
             "--hide-scrollbars",
             "--disable-gpu",
+            # 本机开了 VPN 时，系统代理会把 127.0.0.1 也代理掉，导致截图全是"拒绝连接"。
+            # 显式禁用代理，保证直连本地服务。
+            "--no-proxy-server",
+            "--proxy-bypass-list=*",
             "--no-first-run",
             "--no-default-browser-check",
             "about:blank",

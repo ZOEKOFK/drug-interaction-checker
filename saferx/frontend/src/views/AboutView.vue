@@ -23,13 +23,13 @@ const dataSources = computed(() => [
     name: 'DDIExtraction 2013 Corpus',
     scale: '784 篇 DrugBank 说明书 + 175 篇 MEDLINE 摘要（Train 4,021 / Test 979 条关系）',
     license: 'CC BY-NC 4.0',
-    usage: 'NLP 关系抽取评测 —— 已完成规则基线与 TF-IDF+LR 两档（见 docs/eval_nlp.md）；BioBERT 微调因无 GPU 未执行'
+    usage: 'NLP 抽取评测 —— 实体识别两档（词典 F1 0.656 / BioBERT 微调 F1 0.877）+ 关系四分类两档（规则 0.602 / TF-IDF+LR 0.862），见 docs/eval_nlp.md 与 docs/eval_ner_biobert.md'
   },
   {
     name: 'DDIMDL',
     scale: '572 种药物 · 37,264 条 DDI · 65 种事件类型',
     license: '公开',
-    usage: 'DDI 事件预测实验基准（选做，未开始）'
+    usage: '原计划的事件预测基准。本项目数据无 SMILES / 靶点 / ATC，DDIMDL 不可复现，已改用链接预测完成（补全 AUC 0.955 / 冷启动 0.747），见 docs/eval_prediction.md'
   }
 ])
 
@@ -54,12 +54,12 @@ const references = [
   'Segura-Bedmar I, et al. The 1st DDIExtraction-2013 challenge task: extraction of drug–drug interactions from biomedical texts. DMIR Workshop, 2013.'
 ]
 
-const stack = [
+const stack = computed(() => [
   { name: '前端', detail: 'Vue 3 · Vite · Tailwind CSS · Pinia · ECharts' },
   { name: '后端', detail: 'FastAPI · SQLite（无序对规范化 + 复合唯一索引）' },
-  { name: '数据管道', detail: 'DDInter 2.0 CSV 清洗入库 · 网页表格接口抓取 DDSI/DFI/重复用药 · 中英别名映射（366 种中文名 + 拼音）' },
-  { name: '模型层', detail: '当前为词典 + 规则基线（已在 DDIExtraction 2013 上评测）；BioBERT 微调受本机无 GPU 限制' }
-]
+  { name: '数据管道', detail: `DDInter 2.0 CSV 清洗入库 · 网页表格接口抓取 DDSI/DFI/重复用药 · 中英别名映射（${fmt(stats.value?.drugs_with_cn)} 种中文名 + 拼音）` },
+  { name: '模型层', detail: '在线推理为词典 + 规则基线（响应 <5ms）；BioBERT 序列标注已在 CPU 上微调完成（实体 F1 0.877），按需加载，不拖慢主链路' }
+])
 </script>
 
 <template>
