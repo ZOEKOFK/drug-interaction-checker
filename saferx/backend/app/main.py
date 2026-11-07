@@ -64,6 +64,10 @@ if (FRONTEND_DIST / "assets").exists():
     @app.get("/{full_path:path}", include_in_schema=False)
     def spa(full_path: str):
         """SPA 兜底：非 /api、非静态资源路径一律回 index.html。"""
+        # 未知的 /api/* 必须回 404 JSON，不能回 index.html：否则前端一旦把路径写错，
+        # fetch 会拿到 200 + HTML，在 JSON.parse 处抛出无关错误，真实问题被掩盖。
+        if full_path.startswith(("api/", "docs", "openapi.json")):
+            return JSONResponse({"detail": "Not Found"}, status_code=404)
         target = FRONTEND_DIST / full_path
         if full_path and target.is_file():
             return FileResponse(target)

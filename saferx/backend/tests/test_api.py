@@ -110,3 +110,16 @@ def test_lab_extract_new_pair(client):
 def test_lab_extract_empty_rejected(client):
     r = client.post("/api/lab/extract", json={"text": ""})
     assert r.status_code == 422
+
+
+def test_unknown_api_path_returns_404_json(client):
+    """未知 /api/* 必须回 404 JSON；若回 index.html，前端会拿到 200+HTML，
+    在 JSON.parse 处抛无关错误，掩盖真实问题。仅在生产托管模式（有 dist）下断言。"""
+    from app.config import FRONTEND_DIST
+
+    r = client.get("/api/this-endpoint-does-not-exist")
+    if (FRONTEND_DIST / "assets").exists():
+        assert r.status_code == 404
+        assert r.headers["content-type"].startswith("application/json")
+    else:
+        assert r.status_code in (404, 405)

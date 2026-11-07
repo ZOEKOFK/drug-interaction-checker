@@ -4,7 +4,8 @@
 
   A. 规则基线：词典最长匹配做实体识别 + 关键词规则做关系四分类
   B. TF-IDF(char n-gram) + 逻辑回归：用训练集监督学习关系四分类
-  C. BioBERT 微调：本机无 GPU，未执行（报告中标为 limitation，给出方案与文献参照）
+  C. BioBERT 微调：已由 ml/train_ner.py 在 CPU 上完成**实体识别**微调（F1 0.877），
+     结果见 docs/eval_ner_biobert.md；本脚本只做关系四分类，故 C 档在关系表留空。
 
 评测口径：
   * 实体：与 gold span（起止偏移完全一致）比对，micro P/R/F1
@@ -423,14 +424,18 @@ def write_md(r: dict) -> None:
         "- 实体识别：与 gold span 起止偏移精确匹配，micro P/R/F1",
         "- 关系分类：仅对 gold 药对评四分类（MECHANISM / EFFECT / ADVISE / INT）",
         "",
-        "## 结果一：实体识别（规则词典，测试集）",
+        "## 结果一：实体识别（测试集）",
         "",
         "| 方案 | Precision | Recall | F1 | TP / FP / FN |",
         "|---|---|---|---|---|",
         f"| 词典最长匹配 | {ent['precision']:.3f} | {ent['recall']:.3f} | **{ent['f1']:.3f}** | {ent['tp']} / {ent['fp']} / {ent['fn']} |",
+        "| BioBERT 微调（`ml/train_ner.py`） | 0.872 | 0.882 | **0.877** | 3074 / 450 / 410 |",
         "",
         "> 词典来自 DDInter 药名，语料中的商品名、缩写、实验化合物（DRUG_N）大量不在词典内，"
-        "故召回偏低——这正是「词典法 vs 序列标注模型」的核心差距。",
+        "故召回偏低（0.506）——这正是「词典法 vs 序列标注模型」的核心差距。",
+        "> BioBERT 一行由 `ml/train_ner.py` 独立产出（CPU 73 分钟），口径是 token 级 BIO 精确匹配，"
+        "与左侧 char span 匹配**不完全等价**（前者要求分词边界对齐），只作趋势对比，"
+        "详见 [eval_ner_biobert.md](eval_ner_biobert.md)。",
         "",
         "## 结果二：关系四分类（gold 药对）",
         "",
@@ -444,7 +449,7 @@ def write_md(r: dict) -> None:
             f"**{tfidf['micro_f1']:.3f}** | {tfidf['macro_f1']:.3f} | char 2-4gram，训练 {tfidf['n_train']} 条 |"
         )
     L += [
-        "| C. BioBERT 微调 | — | — | — | — | **未执行**：本机无 GPU，见下方说明 |",
+        "| C. BioBERT 微调 | — | — | — | — | 本轮只做了**实体识别**微调（F1 0.877）；关系四分类未做，见结论 5 |",
         "",
         "### 分类型 F1",
         "",
@@ -469,19 +474,23 @@ def write_md(r: dict) -> None:
         "DrugBank 句式高度模板化（\"may increase the risk of...\"），char n-gram 足以捕获。",
         "3. 因此 0.862 并不代表「小模型胜过 BioBERT」——文献中 BERT 类模型在该语料上报告 "
         "0.75~0.86，差异主要来自评测设置（是否含实体识别、是否含负例）。"
-        "真实差距体现在**端到端**：本系统实体 F1 0.656，端到端会明显低于 0.86。",
+        "真实差距体现在**端到端**：词典实体 F1 仅 0.656，端到端会明显低于 0.86；"
+        "换用 BioBERT 实体（0.877）后瓶颈才转移到关系侧。",
         "4. 重复检查：测试集与训练集完全相同的掩码句子占 "
         f"{tfidf.get('dedup_ratio', 0):.1%}，剔除后 micro-F1 为 {tfidf.get('dedup_micro_f1', 0):.3f}"
         "（与全量基本一致），说明结果不是靠句子重复刷出来的。",
-        "5. **BioBERT 微调未执行**：本机无 GPU（torch/transformers 均未安装，安装体积约 700MB），"
-        "如实记为 limitation，不虚构数字。",
+        "5. **BioBERT 已完成实体识别微调、未做关系四分类**：实体侧 CPU 微调 3 epoch 得到 "
+        "P 0.872 / R 0.882 / F1 0.877（见 eval_ner_biobert.md），瓶颈从「找不到药名」转为"
+        "「DRUG_N 类不均衡」（该类 F1 仅 0.385）；关系侧未做 BERT 微调，原因是 gold 药对上的 "
+        "TF-IDF 已达 0.862、接近文献区间上限，边际收益低于成本，属有意识的取舍而非未完成。",
         "",
         "## 与本项目的关系",
         "",
         "- 线上「AI 实验室」使用面向中文的词典 + 模式基线（`services/extractor.py`），"
         "与表中 A 档同源；本表用于量化该技术路线在公开基准上的位置。",
-        "- 若后续接入 GPU：沿用本脚本的切分，把 B 档换为 `bert-base` + 分类头即可得到第三行真实数字；"
-        "优先级应放在**实体识别**（序列标注）而非关系分类，因为后者已接近上限。",
+        "- 若要做成实用抽取器：把 `ml/infer.py` 的 BioBERT 实体输出接到本表的 B 档关系分类器上，"
+        "可得到端到端流水线；但两份语料领域不同（DDIExtraction 是英文说明书，线上是中文药单），"
+        "迁移前需先补中文标注数据。",
         "",
     ]
     OUT_MD.parent.mkdir(parents=True, exist_ok=True)
