@@ -22,6 +22,7 @@
 """
 from __future__ import annotations
 
+import re
 import shutil
 import sys
 from pathlib import Path
@@ -32,6 +33,45 @@ SITE = ROOT / "deploy" / "site"
 
 def copytree(src: Path, dst: Path, ignore_patterns=("__pycache__", "*.pyc", ".pytest_cache", "tests")):
     shutil.copytree(src, dst, dirs_exist_ok=True, ignore=shutil.ignore_patterns(*ignore_patterns))
+
+
+def _prune_stale_assets(web: Path) -> int:
+    """删除 web/assets 下没被引用的旧构建产物，返回删除数量。
+
+    Vite 产物带内容 hash，每次构建都换名字；dirs_exist_ok 覆盖复制不会清除旧的，
+    累积下来会把发布包撑大几十个无用文件。
+
+    注意引用有两种形态，都必须跟：
+      1) index.html 里写绝对路径   /assets/index-xxx.js
+      2) chunk 之间互相动态 import 写相对路径  "./AboutView-xxx.js"
+    只认第一种会把动态路由的 chunk 当垃圾删掉（实测曾删掉 AboutView），
+    用户点「关于」才 404。
+    """
+    entry = web / "index.html"
+    if not entry.is_file():
+        return 0
+    assets = web / "assets"
+    # 匹配任意带 hash 的文件名，再回到 assets/ 下确认存在——两种引用形态一次覆盖
+    name_re = re.compile(r"([A-Za-z0-9_.\-]+\.(?:js|css|svg|png|jpe?g|webp|woff2?|ttf))")
+
+    keep, queue = set(), [entry]
+    while queue:
+        path = queue.pop()
+        if path in keep:
+            continue
+        keep.add(path)
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        for match in name_re.finditer(text):
+            candidate = assets / match.group(1)
+            if candidate.is_file() and candidate not in keep:
+                queue.append(candidate)
+
+    removed = 0
+    for path in assets.rglob("*"):
+        if path.is_file() and path not in keep:
+            path.unlink()
+            removed += 1
+    return removed
 
 
 def main() -> int:
@@ -59,6 +99,12 @@ def main() -> int:
     shutil.copy2(ROOT / "data" / "saferx.sqlite", SITE / "data" / "saferx.sqlite")
     shutil.copytree(ROOT / "frontend" / "dist", SITE / "web", dirs_exist_ok=True)
     shutil.copy2(ROOT / "backend" / "requirements.txt", SITE / "requirements.txt")
+
+    # dist 每次构建都会换 hash 文件名，覆盖复制会把历史产物全留着（实测累积到三套）。
+    # 从 index.html 出发做引用闭包，删掉没被任何入口引用到的旧 chunk。
+    pruned = _prune_stale_assets(SITE / "web")
+    if pruned:
+        print(f"· 清理 {pruned} 个陈旧前端产物")
 
     (SITE / "start.sh").write_text(
         "#!/usr/bin/env sh\n"
